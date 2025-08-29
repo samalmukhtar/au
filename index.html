@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة أسماء الله الحسنى مع تحليل الجمل المتكامل</title>
+    <title>لوحة أسماء الله الحسنى مع تكامل علوم الرمل والكنوز والأسرار</title>
     <style>
         :root {
             --bg: #0b0f12;
@@ -11,8 +11,8 @@
             --muted: #9aa4ad;
             --accent: #e74c3c;
             --cell-size: 80px;
-            --dark-tile: #111111; /* بلاطة سوداء داكنة */
-            --light-tile: #dddddd; /* بلاطة بيضاء أقل قتامة */
+            --dark-tile: #111111;
+            --light-tile: #dddddd;
             --symbol-size: 12px;
             --symbol-color: #f1c40f;
         }
@@ -227,12 +227,12 @@
             border: 3px solid #c43b31;
         }
         .c-black {
-            background: var(--dark-tile); /* استخدام اللون الداكن للبلاطات السوداء */
+            background: var(--dark-tile);
             color: #fff;
             border: 2px solid #000;
         }
         .c-white {
-            background: var(--light-tile); /* استخدام اللون الفاتح للبلاطات البيضاء */
+            background: var(--light-tile);
             color: #000;
             border: 2px solid #bbb;
         }
@@ -492,6 +492,28 @@
         .symbol-7::after { content: "●"; }
         .symbol-8::after { content: "∞"; }
         .symbol-9::after { content: "§"; }
+        .rumal-pattern {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            margin-top: 2px;
+        }
+        .rumal-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #fff;
+        }
+        .rumal-dot.double {
+            width: 10px;
+        }
+        .tafaq-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
         @media (max-width: 1000px) {
             .sidepanel {
                 width: 100%;
@@ -516,7 +538,7 @@
 <body>
     <div class="header">
         <div>
-            <div class="title">لوحة أسماء الله الحسنى مع تحليل الجمل المتكامل</div>
+            <div class="title">لوحة أسماء الله الحسنى مع تكامل علوم الرمل والكنوز والأسرار</div>
             <div class="small-note">الترتيب داخل المربعات: من الأعلى للأسفل، وفي كل صف من اليمين إلى الشمال</div>
             <div class="small-note">اضغط مرتين على أي مربع لعرض تفاصيل المنزلة القمرية والخاتم السليماني</div>
             <div class="small-note">اضغط بزر الماوس الأيمن لتحديد النص ثم اضغط مرة أخرى لنسخه</div>
@@ -529,6 +551,7 @@
             <button class="btn" id="btnPrev">الرجوع</button>
             <button class="btn btn-main" id="btnNext">التالي</button>
             <button class="btn" id="btnSubmit" style="background: #2ecc71">التقديم</button>
+            <button class="btn" id="btnExtractMessage" style="background: #3498db">استخراج الرسالة</button>
         </div>
     </div>
     <div class="wrapper">
@@ -566,7 +589,7 @@
                 <div style="margin-top: 6px">الكلمة الحالية: <span id="currentWord">—</span></div>
                 <div style="margin-top: 6px" class="small-note">الحروف الأبجدية المعتمدة تحت الرقم: الألف → الباء → التاء ... ثم تعاد كل 28 حرفاً</div>
                 <div style="margin-top: 6px" class="small-note">البرج: رقم من 1 إلى 12 يُعاد من جديد بعد 12</div>
-                <div style="margin-top: 6px" class="small-note">اضغط مرتين على أي مربع لعرض المنزل القمري والخاتم السليماني</div>
+                <div style="margin-top: 6px" class="small-note">اضغط مرتين على أي مربع لعرض المنزلة القمرية والخاتم السليماني</div>
                 <div style="margin-top: 6px" class="small-note">اضغط بزر الماوس الأيمن لتحديد النص ثم اضغط مرة أخرى لنسخه</div>
             </div>
             <div class="panel-card">
@@ -608,13 +631,74 @@
                     <a href="https://kharta.website/%D8%A7%D9%84%D8%AE%D8%A7%D8%B1%D8%B7%D8%A9-%D8%A7%D9%84%D9%81%D9%84%D9%83%D9%8A%D8%A9/" target="_blank" rel="noopener">المركز الفلكي العالمي</a>
                 </div>
             </div>
+            <div class="panel-card">
+                <div style="font-weight: 700; margin-bottom: 6px">🜂 مثلث الغزالي</div>
+                <div class="small-note" style="margin-bottom: 6px">المربع السحري 3x3 حيث مجموع كل صف/عمود/قطر = 15</div>
+                <div id="ghazaliTriangle" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 10px;"></div>
+                <div class="small-note" style="margin-top: 6px; text-align: center;">8 1 6<br>3 5 7<br>4 9 2</div>
+                <div class="small-note" style="margin-top: 6px;">
+                    <strong>الشرح:</strong> مثلث الغزالي هو مربع سحري 3×3 يُنسب إلى الإمام الغزالي، 
+                    حيث مجموع كل صف وأعمدة وأقطار يساوي 15. يُستخدم في العلوم الباطنية لجذب البركة 
+                    وتفريج الكروب، ويعتبر أساساً لعلم الاوفاق. تمثل الأعداد في المثلث توازن القوى الكونية 
+                    وتناسقها، حيث العدد 5 في الوسط يرمز إلى التوحيد والمركزية الإلهية.
+                </div>
+            </div>
             <div style="background: #071018; padding: 8px; border-radius: 8px; margin-top: 8px;">
                 <div style="font-weight: 700; margin-bottom: 6px">قائمة ألوان الطيف (مع السر/الحكمة)</div>
                 <div id="rainbowLegend" class="small-note"></div>
             </div>
+            <div class="panel-card">
+                <div style="font-weight: 700; margin-bottom: 6px">علم الرمل وأشكاله الـ 16</div>
+                <div id="rumalForms" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px;"></div>
+                <div class="small-note" style="margin-top: 10px;">
+                    <strong>شرح علم الرمل:</strong> علم الرمل هو أحد علوم الغيب الذي يستخدم فيه الرسم على الرمل 
+                    أو الورق لاستخراج أحكام وأسرار. يعتمد على 16 شكلاً أساسياً (بيتاً)، كل بيت يتألف من 4 أعمدة، 
+                    وكل عمود يحتوي على 1 أو 2 نقطة. تُستخدم هذه الأشكال للتنبؤ وعلاج المس والقراءة. في كل خانة من اللوحة 
+                    تظهر أرقام الرمل المقابلة مع شرح خوارزمية الحساب وربطها بالمنزلة القمرية.
+                </div>
+            </div>
+            <div class="panel-card">
+                <div style="font-weight: 700; margin-bottom: 6px">علوم التافاق</div>
+                <div id="tafaqExplanation" class="small-note">
+                    <strong>التافاق:</strong> هو علم يدرس التوافق بين الأرقام والأسماء والأجرام السماوية. 
+                    يعتمد على مبدأ أن كل شيء في الوجود له رقم مرتبط به، وهذه الأرقام تتفاعل مع بعضها البعض 
+                    فتنتج توافقاً أو تعارضاً. التافاق يُستخدم في تحديد الأوقات المناسبة للأعمال، واختيار الأسماء، 
+                    وتحليل الشخصيات. في كل خانة من اللوحة تظهر أرقام التافاق مع شرح خوارزمية الحساب وربطها 
+                    بالمنزلة القمرية والخاتم السليماني.
+                </div>
+                <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 5px;" id="tafaqColors">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="tafaq-indicator" style="background-color: #e74c3c;"></span>
+                        <span>التفاق الناري: للقوة والنشاط</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="tafaq-indicator" style="background-color: #f39c12;"></span>
+                        <span>التفاق الترابي: للاستقرار والبناء</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="tafaq-indicator" style="background-color: #f1c40f;"></span>
+                        <span>التفاق الهوائي: للتواصل والتفكير</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="tafaq-indicator" style="background-color: #2ecc71;"></span>
+                        <span>التفاق المائي: للعاطفة والشفاء</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-card">
+                <div style="font-weight: 700; margin-bottom: 6px">الرسالة في الكنوز والأسرار</div>
+                <div id="treasureMessage" class="small-note" style="min-height: 100px; padding: 10px; background: #09121a; border-radius: 8px;">
+                    <em>اضغط على زر "استخراج الرسالة" لعرض الرسالة المستخلصة من البلاطات المكشوفة</em>
+                </div>
+                <div class="small-note" style="margin-top: 10px;">
+                    <strong>شرح خوارزمية استخراج الرسالة:</strong> تعتمد هذه الخوارزمية على تحليل القيم العددية 
+                    للبلاطات المكشوفة وربطها بعلم الرمل والمنزلة القمرية والتفاق. يتم جمع القيم وتحليلها 
+                    باستخدام معادلات رياضية وروحانية لاستخراج الرسالة السرية المخفية في الكنوز.
+                </div>
+            </div>
         </div>
     </div>
-    <div class="footer">يمكنك تكبير اللوحة حتى 2500px. العناصر الصغيرة (رقم المربع، الحرف الأبجدي، البرج) ثابتة في كل مربع. تمت إضافة أسماء الله الحسنى ودورة أيام الأسبوع (1→7) وتكامل مولد المنازل القمرية والخاتم السليماني.</div>
+    <div class="footer">يمكنك تكبير اللوحة حتى 2500px. العناصر الصغيرة (رقم المربع، الحرف الأبجدي، البرج) ثابتة في كل مربع. تمت إضافة أسماء الله الحسنى ودورة أيام الأسبوع (1→7) وتكامل مولد المنازل القمرية والخاتم السليماني مع علم الاوفاق والرمل ومثلث الغزالي وعلوم التافاق والرسالة في الكنوز والأسرار.</div>
     <div id="houseModal" class="house-modal" style="display: none;">
         <div class="house-container">
             <div class="house-header">
@@ -719,6 +803,44 @@
                         <p id="modalSealHeavenlyKings"></p>
                     </div>
                 </div>
+                <div class="house-info">
+                    <h3>علم الرمل المرتبط</h3>
+                    <div class="info-item">
+                        <strong>الشكل الرملي</strong>
+                        <p id="modalRumalForm">الحمل</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>النمط</strong>
+                        <div id="modalRumalPattern" class="rumal-pattern"></div>
+                    </div>
+                    <div class="info-item">
+                        <strong>الدلالة</strong>
+                        <p id="modalRumalMeaning">بداية جديدة، قوة، طموح</p>
+                    </div>
+                </div>
+                <div class="house-info">
+                    <h3>التفاف الأرقام</h3>
+                    <div class="info-item">
+                        <strong>الجمل الكبير</strong>
+                        <p id="modalTafaqBig">0</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الجمل الصغير</strong>
+                        <p id="modalTafaqSmall">0</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الجمل الأوسط</strong>
+                        <p id="modalTafaqMiddle">0</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>رقم التفاق</strong>
+                        <p id="modalTafaqNumber">0</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الدلالة</strong>
+                        <p id="modalTafaqMeaning">لا يوجد تفاق</p>
+                    </div>
+                </div>
             </div>
         </div>
         <button class="close-modal" id="closeHouseModal">&times;</button>
@@ -731,6 +853,33 @@
             "ي": 10, "ى": 10, "ك": 20, "ل": 30, "م": 40, "ن": 50, "س": 60, "ع": 70, "ف": 80, "ص": 90, "ق": 100,
             "ر": 200, "ش": 300, "ت": 400, "ث": 500, "خ": 600, "ذ": 700, "ض": 800, "ظ": 900, "غ": 1000
         };
+        
+        // ✨ تعريف أشكال الرمل الـ 16
+        const RUMAL_FORMS = [
+            { name: "الحمل", pattern: [1, 1, 1, 1], meaning: "بداية جديدة، قوة، طموح", color: "#e74c3c" },
+            { name: "الثور", pattern: [2, 1, 1, 1], meaning: "استقرار، صبر، مثابرة", color: "#f39c12" },
+            { name: "الجوزاء", pattern: [1, 2, 1, 1], meaning: "اتصال، تواصل، تعلم", color: "#f1c40f" },
+            { name: "السرطان", pattern: [2, 2, 1, 1], meaning: "عاطفة، ذاكرة، حماية", color: "#2ecc71" },
+            { name: "الأسد", pattern: [1, 1, 2, 1], meaning: "قيادية، إبداع، ثقة", color: "#1abc9c" },
+            { name: "العذراء", pattern: [2, 1, 2, 1], meaning: "تنظيم، تحليل، دقة", color: "#3498db" },
+            { name: "الميزان", pattern: [1, 2, 2, 1], meaning: "توازن، عدالة، دبلوماسية", color: "#9b59b6" },
+            { name: "العقرب", pattern: [2, 2, 2, 1], meaning: "قوة، تحول، غموض", color: "#e74c3c" },
+            { name: "القوس", pattern: [1, 1, 1, 2], meaning: "استكشاف، تفاؤل، حكمة", color: "#f39c12" },
+            { name: "الجدي", pattern: [2, 1, 1, 2], meaning: "طموح، انضباط، نجاح", color: "#f1c40f" },
+            { name: "الدلو", pattern: [1, 2, 1, 2], meaning: "ابتكار، تحرر، تقدم", color: "#2ecc71" },
+            { name: "الحوت", pattern: [2, 2, 1, 2], meaning: "حدس، إبداع، روحانية", color: "#1abc9c" },
+            { name: "الشمس", pattern: [1, 1, 2, 2], meaning: "نور، حيوية، انتصار", color: "#3498db" },
+            { name: "القمر", pattern: [2, 1, 2, 2], meaning: "حدس، تأثير، تغيير", color: "#9b59b6" },
+            { name: "النجم", pattern: [1, 2, 2, 2], meaning: "إلهام، تألق، توجيه", color: "#e74c3c" },
+            { name: "السيف", pattern: [2, 2, 2, 2], meaning: "حسم، قوة، تحدي", color: "#f39c12" }
+        ];
+        
+        // ✨ تعريف مثلث الغزالي (المربع السحري 3x3)
+        const AL_GHAZALI_TRIANGLE = [
+            [8, 1, 6],
+            [3, 5, 7],
+            [4, 9, 2]
+        ];
         
         // ✨ تعريف متسلسلة فيبوناتشي (64 عنصراً)
         const generateFibonacci = (n) => {
@@ -757,6 +906,7 @@
             { cls: 'spec-5', color: '#651FFF', name: 'نيلي', meaning: 'الروحانية والتأمل' },
             { cls: 'spec-6', color: '#D500F9', name: 'بنفسجي', meaning: 'الصفاء والإلهام' }
         ];
+        
         const zodiacSigns = [
             { name: "الحمل", element: "ناري" },
             { name: "الثور", element: "ترابي" },
@@ -771,12 +921,14 @@
             { name: "الدلو", element: "هوائي" },
             { name: "الحوت", element: "مائي" }
         ];
+        
         const elementColors = {
             "ناري": "zodiac-fire",
             "ترابي": "zodiac-earth",
             "هوائي": "zodiac-air",
             "مائي": "zodiac-water"
         };
+        
         const housesInfo = [
             { name: "بيت القوة والنور", energy: "عالية، بداية جديدة، طاقة متجددة", influence: "يمنح القوة والعزيمة لبدء المشاريع", benefits: "التخطيط، البدايات الجديدة، القيادة", challenges: "الاندفاع الزائد، قلة الصبر" },
             { name: "بيت الحكمة والتوازن", energy: "متوازنة، هادئة، تأملية", influence: "يزيد من الحكمة والتفكير المنطقي", benefits: "التعلم، التخطيط الاستراتيجي، الحكمة", challenges: "المماطلة، الإفراط في التحليل" },
@@ -807,6 +959,7 @@
             { name: "بيت الإرادة والتنفيذ", energy: "قوية، منفذة، حاسمة", influence: "يعزز الإرادة والقدرة على التنفيذ", benefits: "الإرادة، التنفيذ، الإنجاز", challenges: "التصلب، عدم المرونة" },
             { name: "بيت الإكمال والدورة", energy: "كاملة، دائرية، نهائية", influence: "يختتم الدورة ويعد لبداية جديدة", benefits: "الإكمال، الختام، الاستعداد للجديد", challenges: "التشبث بالماضي، الخوف من البدايات" }
         ];
+        
         const MOON_MANSIONS = [
             {
                 name: "الشرطان",
@@ -872,7 +1025,7 @@
                     talisman: "درع حديدي",
                     letterPower: "قوة الدال في الصلابة والمتانة",
                     arabicNames: "المريخ، الزهرة، عطارد",
-                    syriacNames: "mريخو، زهرتا، عطاردو",
+                    syriacNames: "mريخو， زهرتا， عطاردو",
                     days: "الأحد، الاثنين",
                     stars: "الدبران، قلب العقرب",
                     adhesives: "تلاصم الحديد والنار",
@@ -998,7 +1151,7 @@
                     talisman: "كتاب مقدس",
                     letterPower: "قوة الكاف في الحكمة والتدبير",
                     arabicNames: "زحل، المشتري، المريخ",
-                    syriacNames: "زحال， مشترى， mريخo",
+                    syriacNames: "زحال， مشترى، mريخo",
                     days: "الأحد، الاثنين",
                     stars: "الزبرة، الصرفة",
                     adhesives: "تلاصم المعرفة والعمل",
@@ -1088,7 +1241,7 @@
                     talisman: "بناء متوازن",
                     letterPower: "قوة العين في التوازن والاستقرار",
                     arabicNames: "المريخ، الزهرة، المشتري",
-                    syriacNames: "mريخo， زهرتا， مشترى",
+                    syriacNames: "mريخo، زهرتا， مشترى",
                     days: "الأربعاء، الخميس",
                     stars: "الزبانا، الإكليل",
                     adhesives: "تلاصم المادة والروح",
@@ -1124,7 +1277,7 @@
                     talisman: "قلب نابض",
                     letterPower: "قوة الصاد في الطاقة والقوة",
                     arabicNames: "الزهرة، عطارد، المريخ",
-                    syriacNames: "زهرتا، عطاردo， mريخo",
+                    syriacNames: "زهرتا، عطاردo، mريخo",
                     days: "الأحد، الاثنين",
                     stars: "القلب، الشولة",
                     adhesives: "تلاصم القوة والضعف",
@@ -1160,7 +1313,7 @@
                     talisman: "سلة خيرات",
                     letterPower: "قوة الراء في البركة والوفرة",
                     arabicNames: "عطارد، الزهرة، القمر",
-                    syriacNames: "عطاردo， زهرتا， قمرa",
+                    syriacNames: "عطاردo، زهرتا، قمرa",
                     days: "الخميس، الجمعة",
                     stars: "النعائم، البلدة",
                     adhesives: "تلاصم العطاء والبركة",
@@ -1178,7 +1331,7 @@
                     talisman: "صخرة ثابتة",
                     letterPower: "قوة الشين في الاستقرار والثبات",
                     arabicNames: "المريخ، زحل، الشمس",
-                    syriacNames: "mريخo， زحال، شمسa",
+                    syriacNames: "mريخo، زحال، شمسa",
                     days: "السبت، الأحد",
                     stars: "البلدة، سعد الذابح",
                     adhesives: "تلاصم الأرض والاستقرار",
@@ -1214,7 +1367,7 @@
                     talisman: "يد مفتوحة",
                     letterPower: "قوة الثاء في القبول والرضا",
                     arabicNames: "القمر، المريخ، الزهرة",
-                    syriacNames: "قمرa, mريخo， زهرتا",
+                    syriacNames: "قمرa, mريخo، زهرتا",
                     days: "الأربعاء، الخميس",
                     stars: "سعد بلع، سعد السعود",
                     adhesives: "تلاصم القبول والرفض",
@@ -1232,7 +1385,7 @@
                     talisman: "وجه مبتسم",
                     letterPower: "قوة الخاء في السعادة والفرح",
                     arabicNames: "الشمس، عطارد، القمر",
-                    syriacNames: "شمسa, عطاردo， قمرa",
+                    syriacNames: "شمسa, عطاردo، قمرa",
                     days: "الجمعة، السبت",
                     stars: "سعد السعود، سعد الأخبية",
                     adhesives: "تلاصم الفرح والحزن",
@@ -1359,9 +1512,9 @@
             "الحجرات", "ق", "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة",
             "الحديد", "المجادلة", "الحشر", "الممتحنة", "الصف", "الجمعة", "المنافقون", "التغابن",
             "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج", "نوح", "الجن", "المزمل", "المدثر",
-            "القيامة", "الإنسان", "المرsلات", "النبأ", "النازعات", "عبس", "التكوير", "الانفطار", "المطففين", "الانشقاق",
+            "القيامة", "الإنسان", "المرسلا", "النبأ", "النازعات", "عبس", "التكوير", "الانفطار", "المطففين", "الانشقاق",
             "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد", "الشمس", "الليل", "الضحى", "الشرح",
-            "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثr", "العصر", "الهمزة",
+            "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثر", "العصر", "الهمزة",
             "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"
         ];
         const baseClasses = ['c-red', 'c-black', 'c-white'];
@@ -1409,6 +1562,14 @@
         const modalSealAdhesives = document.getElementById('modalSealAdhesives');
         const modalSealEarthlyHelpers = document.getElementById('modalSealEarthlyHelpers');
         const modalSealHeavenlyKings = document.getElementById('modalSealHeavenlyKings');
+        const modalRumalForm = document.getElementById('modalRumalForm');
+        const modalRumalPattern = document.getElementById('modalRumalPattern');
+        const modalRumalMeaning = document.getElementById('modalRumalMeaning');
+        const modalTafaqBig = document.getElementById('modalTafaqBig');
+        const modalTafaqSmall = document.getElementById('modalTafaqSmall');
+        const modalTafaqMiddle = document.getElementById('modalTafaqMiddle');
+        const modalTafaqNumber = document.getElementById('modalTafaqNumber');
+        const modalTafaqMeaning = document.getElementById('modalTafaqMeaning');
         const closeHouseModal = document.getElementById('closeHouseModal');
         const dateInput = document.getElementById('dateInput');
         const btnAnalyze = document.getElementById('btnAnalyze');
@@ -1418,6 +1579,10 @@
         const mansionBody = document.getElementById('mansionBody');
         const abumasharTable = document.getElementById('abumasharTable');
         const abumasharBody = document.getElementById('abumasharBody');
+        const ghazaliTriangle = document.getElementById('ghazaliTriangle');
+        const rumalForms = document.getElementById('rumalForms');
+        const btnExtractMessage = document.getElementById('btnExtractMessage');
+        const treasureMessage = document.getElementById('treasureMessage');
         let BOARD = 8, TOTAL = BOARD * BOARD;
         let words = Array.from({ length: TOTAL }, (_, i) => '');
         let assignedClass = new Array(TOTAL).fill(null);
@@ -1576,6 +1741,341 @@
         function getKhadimByDayName(dayName) {
             return DAY_SERVANTS[dayName] || { upper: "—", middle: "—", lower: "—" };
         }
+        /* ---------- تكامل علم الرمل ---------- */
+        function getRumalFormByIndex(idx) {
+            // تحديد الشكل الرملي بناءً على رقم الخانة
+            const formIndex = idx % RUMAL_FORMS.length;
+            return RUMAL_FORMS[formIndex];
+        }
+        function renderRumalPattern(pattern) {
+            return pattern.map(dots => {
+                return `<div class="rumal-pattern">${Array(dots).fill(0).map(() => 
+                    `<span class="rumal-dot ${dots === 2 ? 'double' : ''}"></span>`).join('')}</div>`;
+            }).join('');
+        }
+        function calculateRumalNumber(idx) {
+            // خوارزمية حساب أرقام الرمل
+            // رقم الرمل = (رقم الخانة + قيمة الجمل للكلمة) mod 16 + 1
+            const word = words[idx];
+            const gematria = word ? computeAbjad(word) : 0;
+            return (idx + 1 + gematria) % 16 + 1;
+        }
+        /* ---------- تكامل مثلث الغزالي ---------- */
+        function renderGhazaliTriangle() {
+            ghazaliTriangle.innerHTML = '';
+            AL_GHAZALI_TRIANGLE.forEach(row => {
+                row.forEach(num => {
+                    const cell = document.createElement('div');
+                    cell.style.backgroundColor = '#071018';
+                    cell.style.color = '#e74c3c';
+                    cell.style.padding = '8px';
+                    cell.style.borderRadius = '4px';
+                    cell.style.fontWeight = 'bold';
+                    cell.style.fontSize = '16px';
+                    cell.textContent = num;
+                    cell.style.textAlign = 'center';
+                    ghazaliTriangle.appendChild(cell);
+                });
+            });
+        }
+        /* ---------- تكامل علوم التافاق ---------- */
+        function calculateTafaq(idx) {
+            const word = words[idx];
+            const gematria = word ? computeAbjad(word) : 0;
+            
+            // حساب الجمل الكبير
+            const big = gematria;
+            
+            // حساب الجمل الصغير
+            const small = reduceToSingleDigit(gematria);
+            
+            // حساب الجمل الأوسط
+            const middle = (big + small) / 2;
+            
+            // حساب رقم التفاق
+            const tafaqNumber = (big % 4) + 1; // 1-4 يمثل العناصر الأربعة
+            
+            // تحديد دلالة التفاق
+            let meaning = "";
+            switch(tafaqNumber) {
+                case 1:
+                    meaning = "تفاق ناري: للقوة والنشاط والبدء";
+                    break;
+                case 2:
+                    meaning = "تفاق ترابي: للاستقرار والبناء";
+                    break;
+                case 3:
+                    meaning = "تفاق هوائي: للتواصل والتفكير";
+                    break;
+                case 4:
+                    meaning = "تفاق مائي: للعاطفة والشفاء";
+                    break;
+                default:
+                    meaning = "لا يوجد تفاق";
+            }
+            
+            return {
+                big: big,
+                small: small,
+                middle: middle,
+                number: tafaqNumber,
+                meaning: meaning
+            };
+        }
+        /* ---------- خوارزمية استخراج الرسالة في الكنوز والأسرار ---------- */
+        function extractMessageFromBoard() {
+            // 1. جمع القيم من البلاطات المكشوفة
+            const revealedCells = [];
+            for (let i = 0; i < TOTAL; i++) {
+                if (revealed[i]) {
+                    revealedCells.push({
+                        index: i,
+                        word: words[i],
+                        gematria: computeAbjad(words[i]),
+                        rumalNumber: calculateRumalNumber(i),
+                        tafaq: calculateTafaq(i),
+                        mansion: MOON_MANSIONS[i % 28],
+                        houseInfo: housesInfo[i % 28]
+                    });
+                }
+            }
+            
+            if (revealedCells.length === 0) {
+                return "لم يتم كشف أي بلاطات بعد. يرجى كشف بعض البلاطات لاستخراج الرسالة.";
+            }
+            
+            // 2. تحليل القيم وحساب الرسالة
+            return analyzeRumalSecrets(revealedCells);
+        }
+        
+        function analyzeRumalSecrets(revealedCells) {
+            // 2.1 تحليل توزيع الرمل
+            const rumalDistribution = {};
+            const mansionDistribution = {};
+            const tafaqDistribution = {};
+            
+            revealedCells.forEach(cell => {
+                // توزيع أشكال الرمل
+                rumalDistribution[cell.rumalNumber] = (rumalDistribution[cell.rumalNumber] || 0) + 1;
+                
+                // توزيع المنازل القمرية
+                const mansionIndex = cell.index % 28;
+                mansionDistribution[mansionIndex] = (mansionDistribution[mansionIndex] || 0) + 1;
+                
+                // توزيع التفاق
+                tafaqDistribution[cell.tafaq.number] = (tafaqDistribution[cell.tafaq.number] || 0) + 1;
+            });
+            
+            // 2.2 تحديد الشكل الرملي السائد
+            let dominantRumal = { number: 0, count: 0 };
+            for (const [number, count] of Object.entries(rumalDistribution)) {
+                if (count > dominantRumal.count) {
+                    dominantRumal = { number: parseInt(number), count };
+                }
+            }
+            
+            // 2.3 تحديد المنزلة القمرية السائدة
+            let dominantMansion = { index: 0, count: 0 };
+            for (const [index, count] of Object.entries(mansionDistribution)) {
+                if (count > dominantMansion.count) {
+                    dominantMansion = { index: parseInt(index), count };
+                }
+            }
+            
+            // 2.4 تحديد التفاق السائد
+            let dominantTafaq = { number: 0, count: 0 };
+            for (const [number, count] of Object.entries(tafaqDistribution)) {
+                if (count > dominantTafaq.count) {
+                    dominantTafaq = { number: parseInt(number), count };
+                }
+            }
+            
+            // 2.5 حساب القيم العددية
+            const totalGematria = revealedCells.reduce((sum, cell) => sum + cell.gematria, 0);
+            const avgGematria = totalGematria / revealedCells.length;
+            const reducedGematria = reduceToSingleDigit(totalGematria);
+            
+            // 2.6 تحليل أسماء الله الحسنى المطابقة
+            const wordGematrias = revealedCells.map(cell => cell.gematria);
+            const asmaResults = [];
+            for (const gem of wordGematrias) {
+                const reduced = reduceToSingleDigit(gem);
+                const matchingAsma = [];
+                for (let i = 0; i < ASMA_UL_HUSNA.length; i++) {
+                    const asma = ASMA_UL_HUSNA[i];
+                    const asmaGematria = computeAbjad(asma);
+                    const reducedAsma = reduceToSingleDigit(asmaGematria);
+                    if (reducedAsma === reduced) {
+                        matchingAsma.push({ name: asma, num: i + 1 });
+                    }
+                }
+                if (matchingAsma.length > 0) {
+                    asmaResults.push(matchingAsma[0]);
+                }
+            }
+            
+            // 2.7 تحديد الرسالة النهائية
+            return generateTreasureMessage(
+                revealedCells, 
+                dominantRumal, 
+                dominantMansion, 
+                dominantTafaq, 
+                totalGematria, 
+                avgGematria, 
+                reducedGematria, 
+                asmaResults
+            );
+        }
+        
+        function generateTreasureMessage(
+            revealedCells, 
+            dominantRumal, 
+            dominantMansion, 
+            dominantTafaq, 
+            totalGematria, 
+            avgGematria, 
+            reducedGematria, 
+            asmaResults
+        ) {
+            // 3.1 تحديد سياق الرسالة بناءً على التفاق السائد
+            let messageContext = "";
+            let messageTone = "";
+            let messageAdvice = "";
+            
+            switch(dominantTafaq.number) {
+                case 1: // تفاق ناري
+                    messageContext = "الرسالة تشير إلى قوة ونشاط وبداية جديدة. هناك طاقة قوية تدفعك إلى الأمام.";
+                    messageTone = "تشجيعية وحازمة";
+                    messageAdvice = "استغل هذه الطاقة النارية لبدء مشروع جديد أو لتحقيق هدف طال انتظاره. تجنب التسرع وحافظ على تركيزك.";
+                    break;
+                case 2: // تفاق ترابي
+                    messageContext = "الرسالة تشير إلى استقرار وبناء وتوطيد الأسس. الوقت مناسب لتعزيز ما بنيته.";
+                    messageTone = "هادئة ومطمئنة";
+                    messageAdvice = "ركز على تعزيز الاستقرار في حياتك. استثمر في المشاريع طويلة الأمد وابني أساسات قوية لمستقبل مزدهر.";
+                    break;
+                case 3: // تفاق هوائي
+                    messageContext = "الرسالة تشير إلى تواصل وتفكير وإبداع. هناك فرص للتواصل والتعلم.";
+                    messageTone = "تفاؤلية ومشجعة";
+                    messageAdvice = "استخدم هذه الطاقة الهوائية للتواصل مع الآخرين وتبادل الأفكار. قد تأتي الحلول من خلال الحوار والتفكير المنطقي.";
+                    break;
+                case 4: // تفاق مائي
+                    messageContext = "الرسالة تشير إلى عاطفة وشفاء وعمق. الوقت مناسب للتأمل وفهم المشاعر.";
+                    messageTone = "عاطفية وعميقة";
+                    messageAdvice = "استمع إلى حدسك وانظر إلى الأمور من منظور أعمق. قد تحتاج إلى شفاء نفسي أو عاطفي قبل المضي قدماً.";
+                    break;
+                default:
+                    messageContext = "الرسالة تحتوي على طاقة مختلطة. تحتاج إلى تحليل متوازن.";
+                    messageTone = "محايدة ومتوازنة";
+                    messageAdvice = "استخدم الحكمة لتوازن بين مختلف الجوانب في حياتك. لا تستعجل القرار وخذ الوقت الكافي لفهم الرسالة بشكل كامل.";
+            }
+            
+            // 3.2 تحديد دلالة الرقم المختصر (من 1 إلى 9)
+            let reducedMeaning = "";
+            switch(reducedGematria) {
+                case 1: 
+                    reducedMeaning = "البدايات الجديدة، الوحدة، الإرادة القوية. الرسالة تشير إلى بداية دورة جديدة في حياتك.";
+                    break;
+                case 2:
+                    reducedMeaning = "التوازن، التعاون، الثنائيات. الرسالة تشير إلى أهمية التوازن والشراكة في ما تفعله.";
+                    break;
+                case 3:
+                    reducedMeaning = "الإبداع، التعبير، الابتكار. الرسالة تشجعك على التعبير عن نفسك وإظهار إبداعك.";
+                    break;
+                case 4:
+                    reducedMeaning = "الاستقرار، البنية، التأسيس. الرسالة تشير إلى أهمية بناء أساس متين لمشاريعك.";
+                    break;
+                case 5:
+                    reducedMeaning = "الحرية، التغيير، المغامرة. الرسالة تشجعك على التغيير والانفتاح على الجديد.";
+                    break;
+                case 6:
+                    reducedMeaning = "المسؤولية، الحب، التوازن. الرسالة تشير إلى أهمية العناية بالعلاقات والالتزامات.";
+                    break;
+                case 7:
+                    reducedMeaning = "التأمل، الروحانية، البحث. الرسالة تشجعك على البحث عن الحقيقة والتأمل في حياتك.";
+                    break;
+                case 8:
+                    reducedMeaning = "النجاح المادي، السلطة، التوازن. الرسالة تشير إلى تحقيق التوازن بين المادي والمعنوي.";
+                    break;
+                case 9:
+                    reducedMeaning = "الاكتمال، الرحمة، الختام. الرسالة تشير إلى نهاية دورة وتحضير لبداية جديدة.";
+                    break;
+                default:
+                    reducedMeaning = "الرسالة تحمل طاقة خاصة تحتاج إلى تفسير دقيق.";
+            }
+            
+            // 3.3 تحديد أسماء الله الحسنى المهمة
+            let asmaMessage = "الأسماء الإلهية المرتبطة بالرسالة: ";
+            if (asmaResults.length > 0) {
+                const uniqueAsma = [...new Set(asmaResults.map(a => a.name))];
+                asmaMessage += uniqueAsma.slice(0, 3).join(", ");
+                if (uniqueAsma.length > 3) {
+                    asmaMessage += " وغيرها...";
+                }
+            } else {
+                asmaMessage += "الله، الرحمن، الرحيم";
+            }
+            
+            // 3.4 تحديد المنزلة القمرية السائدة
+            const mansion = MOON_MANSIONS[dominantMansion.index];
+            const houseInfo = housesInfo[dominantMansion.index];
+            
+            let mansionMessage = `
+                <strong>المنزلة القمرية السائدة:</strong> ${mansion.name} (${dominantMansion.index + 1})<br>
+                <strong>الدلالة:</strong> ${mansion.meaning}<br>
+                <strong>الطاقة:</strong> ${houseInfo.energy}<br>
+                <strong>التأثير:</strong> ${houseInfo.influence}
+            `;
+            
+            // 3.5 تحديد الشكل الرملي السائد
+            const rumalForm = RUMAL_FORMS[dominantRumal.number - 1];
+            
+            let rumalMessage = `
+                <strong>الشكل الرملي السائد:</strong> ${rumalForm.name} (${dominantRumal.number})<br>
+                <strong>الدلالة:</strong> ${rumalForm.meaning}
+            `;
+            
+            // 3.6 تحديد التفاق السائد
+            const tafaqMeaning = calculateTafaq(0).meaning; // سيتم تحديثه في الاستدعاء الفعلي
+            
+            let tafaqMessage = `
+                <strong>التفاق السائد:</strong> ${dominantTafaq.number}<br>
+                <strong>الدلالة:</strong> ${tafaqMeaning}
+            `;
+            
+            // 3.7 بناء الرسالة النهائية
+            return `
+                <div style="font-weight: bold; color: #e74c3c; margin-bottom: 10px;">الرسالة في الكنوز والأسرار</div>
+                <div style="margin-bottom: 15px; line-height: 1.5;">
+                    <div style="margin-bottom: 10px;">
+                        <strong>السياق العام:</strong> ${messageContext}<br>
+                        <strong>نبرة الرسالة:</strong> ${messageTone}<br>
+                        <strong>النصيحة الرئيسية:</strong> ${messageAdvice}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>الدلالة العددية:</strong> ${reducedGematria}<br>
+                        ${reducedMeaning}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        ${asmaMessage}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        ${mansionMessage}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        ${rumalMessage}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        ${tafaqMessage}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>الخلاصة:</strong> الرسالة المستخلصة من البلاطات المكشوفة تشير إلى أن الوقت مناسب ${mansion.meaning.toLowerCase()} 
+                        مع الاستفادة من طاقة ${rumalForm.name} وتفعيل قوة ${tafaqMeaning.split(':')[0]}. 
+                        استخدم أسماء الله الحسنى المذكورة لتعزيز تأثير الرسالة في حياتك.
+                    </div>
+                </div>
+            `;
+        }
+        
         /* ---------- بناء اللوحة ---------- */
         function buildGrid() {
             gridEl.innerHTML = '';
@@ -1613,14 +2113,12 @@
                 extras.className = 'extras';
                 extras.innerHTML = renderExtras(idx);
                 cell.appendChild(extras);
-                
                 // ✨ إضافة الرمز الهندسي من متسلسلة فيبوناتشي
                 const reducedValue = reduceToSingleDigit(FIBONACCI_SEQUENCE[idx] || idx + 1);
                 const geomCls = `symbol symbol-${reducedValue || 1}`;
                 const geomSymb = document.createElement('div');
                 geomSymb.className = 'geometry ' + geomCls;
                 cell.appendChild(geomSymb);
-                
                 // ✨ إضافة الكيان الكوني (القلم، اللوح، الكرسي، العرش)
                 if (idx % 7 === 0) {
                     const cosmicTag = document.createElement('div');
@@ -1628,7 +2126,6 @@
                     cosmicTag.innerText = ['القلم', 'اللوح', 'الكرسي', 'العرش'][idx % 4];
                     cell.appendChild(cosmicTag);
                 }
-                
                 cell.addEventListener('mouseenter', onCellHover);
                 cell.addEventListener('click', onCellClick);
                 cell.addEventListener('dblclick', onCellDoubleClick);
@@ -1640,6 +2137,8 @@
             updateStatus();
             buildRowNumbers();
             renderRainbowLegend();
+            renderRumalForms();
+            renderGhazaliTriangle();
         }
         function renderExtras(idx) {
             const asma = getAsmaByIndex(idx);
@@ -1648,6 +2147,14 @@
             const secondSurah = (secondSurahIndex <= 114) ? SURAHS[secondSurahIndex - 1] : null;
             const word = words[idx];
             const matchingAsmaResult = word ? findMatchingAsma(word) : null;
+            
+            // حساب أرقام الرمل
+            const rumalNumber = calculateRumalNumber(idx);
+            const rumalForm = getRumalFormByIndex(idx);
+            
+            // حساب التافاق
+            const tafaq = calculateTafaq(idx);
+            
             // تجهيز النص لعرض النتائج
             let matchingAsmaHTML = '';
             if (matchingAsmaResult) {
@@ -1665,12 +2172,21 @@
                     </div>
                 `;
             }
+            
             return `
                 <div class="part asm">
                     ${asma.firstAsma ? asma.firstAsma.name + ' <span class="asm-num">(' + asma.firstAsma.num + ')</span>' : ''}
                     ${asma.secondAsma ? '<br>' + asma.secondAsma.name + ' <span class="asm-num">(' + asma.secondAsma.num + ')</span>' : ''}
                 </div>
                 ${matchingAsmaHTML}
+                <div class="part rumal">
+                    <strong>رقم الرمل: ${rumalNumber}</strong>
+                    <div style="font-size:10px; margin-top:2px">الشكل: ${rumalForm.name} (${rumalForm.meaning})</div>
+                </div>
+                <div class="part tafaq">
+                    <strong>التفاق: ${tafaq.number}</strong>
+                    <div style="font-size:10px; margin-top:2px">الدلالة: ${tafaq.meaning}</div>
+                </div>
                 <div class="part surah">
                     سورة: ${firstSurah} (${idx + 1})
                     ${secondSurah ? '<br>سورة: ' + secondSurah + ' (' + secondSurahIndex + ')' : ''}
@@ -1690,6 +2206,30 @@
                 div.textContent = i;
                 rowNumbersEl.appendChild(div);
             }
+        }
+        /* ---------- عرض أشكال الرمل ---------- */
+        function renderRumalForms() {
+            rumalForms.innerHTML = '';
+            RUMAL_FORMS.forEach(form => {
+                const formEl = document.createElement('div');
+                formEl.style.backgroundColor = '#071018';
+                formEl.style.borderRadius = '8px';
+                formEl.style.padding = '8px';
+                formEl.style.textAlign = 'center';
+                formEl.style.color = '#fff';
+                
+                const patternHTML = form.pattern.map(dots => {
+                    return `<div class="rumal-pattern">${Array(dots).fill(0).map(() => 
+                        `<span class="rumal-dot ${dots === 2 ? 'double' : ''}"></span>`).join('')}</div>`;
+                }).join('');
+                
+                formEl.innerHTML = `
+                    <div style="font-weight:bold; color:${form.color}; margin-bottom:4px;">${form.name}</div>
+                    <div style="margin-bottom:4px;">${patternHTML}</div>
+                    <div style="font-size:10px; opacity:0.8;">${form.meaning}</div>
+                `;
+                rumalForms.appendChild(formEl);
+            });
         }
         /* ---------- تعديل الألوان لتكون جميعها سوداء ---------- */
         function applyAllBlackColors() {
@@ -1785,6 +2325,9 @@
             houseCycleCount = Math.floor(houseIndex / 28) + 1;
             const mansion = MOON_MANSIONS[houseIndex];
             const seal = mansion.seal || {};
+            const rumalForm = getRumalFormByIndex(houseIndex);
+            const tafaq = calculateTafaq(houseIndex);
+            
             modalHouseName.textContent = `${houseIndex + 1}. ${info.name}`;
             modalHouseNumber.textContent = houseIndex + 1;
             modalHouseLetter.textContent = letter;
@@ -1809,6 +2352,29 @@
             modalSealAdhesives.textContent = seal.adhesives || "—";
             modalSealEarthlyHelpers.textContent = seal.earthlyHelpers || "—";
             modalSealHeavenlyKings.textContent = seal.heavenlyKings || "—";
+            
+            // تعبئة بيانات علم الرمل
+            modalRumalForm.textContent = rumalForm.name;
+            modalRumalPattern.innerHTML = '';
+            rumalForm.pattern.forEach(dots => {
+                const patternDiv = document.createElement('div');
+                patternDiv.className = 'rumal-pattern';
+                for (let i = 0; i < dots; i++) {
+                    const dot = document.createElement('span');
+                    dot.className = `rumal-dot ${dots === 2 ? 'double' : ''}`;
+                    patternDiv.appendChild(dot);
+                }
+                modalRumalPattern.appendChild(patternDiv);
+            });
+            modalRumalMeaning.textContent = rumalForm.meaning;
+            
+            // تعبئة بيانات التفاق
+            modalTafaqBig.textContent = tafaq.big;
+            modalTafaqSmall.textContent = tafaq.small;
+            modalTafaqMiddle.textContent = tafaq.middle.toFixed(1);
+            modalTafaqNumber.textContent = tafaq.number;
+            modalTafaqMeaning.textContent = tafaq.meaning;
+            
             houseModal.style.display = "flex";
         }
         /* ---------- تحديد النص والنسخ عند الضغط بالزر الأيمن ---------- */
@@ -1848,16 +2414,22 @@
             const surah = cell.querySelector('.extras .surah').innerText;
             const day = cell.querySelector('.extras .day').innerText;
             const kh = cell.querySelector('.extras .kh').innerText;
+            const rumal = cell.querySelector('.extras .rumal').innerText;
+            const tafaq = cell.querySelector('.extras .tafaq').innerText;
+            
             const contentToCopy = `
                 الكلمة: ${word}
                 قيمة الجمل: ${gematria}
                 الحرف: ${letter}
                 البرج: ${zodiac}
                 الأسماء: ${asma}
+                أرقام الرمل: ${rumal}
+                التفاق: ${tafaq}
                 السور: ${surah}
                 اليوم: ${day}
                 الخدام: ${kh}
             `.replace(/^\s+/gm, ''); // إزالة المسافات الزائدة من بداية كل سطر
+            
             navigator.clipboard.writeText(contentToCopy).then(() => {
                 // إظهار مؤشر نسخ ناجح
                 cell.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.7)';
@@ -1945,6 +2517,12 @@
             w.document.close();
         });
         document.getElementById('btnLoad').addEventListener('click', loadWordsFromField);
+        
+        // زر استخراج الرسالة
+        btnExtractMessage.addEventListener('click', () => {
+            const message = extractMessageFromBoard();
+            treasureMessage.innerHTML = message;
+        });
         /* ---------- التحكم بالماوس والأسهم للتكبير والتصغير ---------- */
         let isDragging = false;
         let startX, startY, startTransformX = 0, startTransformY = 0;
