@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة أسماء الله الحسنى مع تحليل الجمل المتكامل</title>
+    <style>
+        :root {
+            --bg: #0b0f12;
+            --panel: #071018;
+            --muted: #9aa4ad;
+            --accent: #e74c3c;
+            --cell-size: 80px;
+            --dark-tile: #111111; /* بلاطة سوداء داكنة */
+            --light-tile: #dddddd; /* بلاطة بيضاء أقل قتامة */
+            --symbol-size: 12px;
+            --symbol-color: #f1c40f;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: #fff;
+            font-family: "Noto Naskh Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+        a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        input[type="text"],
+        textarea,
+        input[type="date"],
+        select {
+            background: #071018;
+            border: 1px solid #122028;
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            direction: rtl;
+        }
+        textarea {
+            width: 520px;
+            min-height: 80px;
+            resize: vertical;
+        }
+        .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .btn-main {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #233;
+            color: var(--muted);
+        }
+        .btn-spectrum {
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #2ecc71, #1abc9c, #3498db, #9b59b6);
+            color: #000;
+        }
+        .wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .board-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            overflow: visible;
+            padding: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, var(--cell-size));
+            grid-template-rows: repeat(8, var(--cell-size));
+            gap: 6px;
+            background: transparent;
+            padding: 6px;
+            border-radius: 12px;
+            transition: transform 0.1s ease, scale 0.1s ease;
+            transform-origin: top left;
+            position: relative;
+        }
+        .cell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform .14s ease, box-shadow .14s;
+            font-weight: 700;
+            min-width: var(--cell-size);
+            min-height: var(--cell-size);
+            cursor: pointer;
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+        .cell.hidden .word {
+            opacity: 0.06;
+            color: transparent;
+        }
+        .cell.visible .word {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .cell .meta-num {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            font-size: 11px;
+            opacity: 0.95;
+            text-align: left;
+            line-height: 1;
+        }
+        .cell .meta-letter {
+            position: absolute;
+            top: 22px;
+            left: 6px;
+            font-size: 12px;
+            opacity: 0.95;
+        }
+        .cell .meta-tower {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 11px;
+            opacity: 0.95;
+        }
+        .cell .word {
+            font-size: 18px;
+            padding: 2px 4px;
+            transition: all .12s;
+            display: block;
+            direction: rtl;
+            z-index: 2;
+        }
+        .cell .gematria {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            right: 6px;
+            font-size: 12px;
+            z-index: 2;
+        }
+        .extras {
+            position: absolute;
+            bottom: 10px;
+            right: 6px;
+            left: 6px;
+            font-size: 10px;
+            line-height: 1.2;
+            z-index: 2;
+            text-align: right;
+        }
+        .extras .part {
+            opacity: 0.92;
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .extras .asm {
+            font-weight: 800;
+            color: #f5d08a;
+        }
+        .extras .surah {
+            color: #a8d8ea;
+        }
+        .extras .day {
+            opacity: 0.9;
+        }
+        .extras .kh {
+            opacity: 0.85;
+        }
+        .extras .asm-num {
+            color: #ffa07a;
+            margin-left: 5px;
+        }
+        .c-red {
+            background: #e74c3c;
+            color: #fff;
+            border: 3px solid #c43b31;
+        }
+        .c-black {
+            background: var(--dark-tile); /* استخدام اللون الداكن للبلاطات السوداء */
+            color: #fff;
+            border: 2px solid #000;
+        }
+        .c-white {
+            background: var(--light-tile); /* استخدام اللون الفاتح للبلاطات البيضاء */
+            color: #000;
+            border: 2px solid #bbb;
+        }
+        .spec-0 {
+            background: #FF1744;
+            color: #fff;
+        }
+        .spec-1 {
+            background: #FF9100;
+            color: #000;
+        }
+        .spec-2 {
+            background: #FFD600;
+            color: #000;
+        }
+        .spec-3 {
+            background: #00C853;
+            color: #fff;
+        }
+        .spec-4 {
+            background: #00B0FF;
+            color: #000;
+        }
+        .spec-5 {
+            background: #651FFF;
+            color: #fff;
+        }
+        .spec-6 {
+            background: #D500F9;
+            color: #fff;
+        }
+        .zodiac-fire {
+            color: #FFD700;
+        }
+        .zodiac-earth {
+            color: #FFFFFF;
+        }
+        .zodiac-air {
+            color: #000000;
+        }
+        .zodiac-water {
+            color: #1E90FF;
+        }
+        .small-note {
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .sidepanel {
+            width: 360px;
+            max-width: 38vw;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .status {
+            padding: 10px;
+            background: #081018;
+            border-radius: 8px;
+            color: var(--muted);
+        }
+        .slider-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .footer {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 6px;
+        }
+        .row-numbers {
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            pointer-events: none;
+            user-select: none;
+            z-index: 10;
+        }
+        .row-numbers div {
+            font-size: 12px;
+            opacity: 0.95;
+            min-width: 20px;
+            text-align: center;
+        }
+        .house-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .house-container {
+            background: #0b0f12;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.5);
+            border: 2px solid #e74c3c;
+            position: relative;
+        }
+        .house-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        .house-header h2 {
+            font-size: 28px;
+            margin: 0;
+            color: #e74c3c;
+        }
+        .house-header .house-number {
+            font-size: 60px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 10px 0;
+            line-height: 1;
+        }
+        .house-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .house-info {
+            background: #071018;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .house-info h3 {
+            color: #f39c12;
+            margin-top: 0;
+            border-bottom: 1px solid #34495e;
+            padding-bottom: 10px;
+        }
+        .info-item {
+            margin-bottom: 12px;
+        }
+        .info-item strong {
+            color: #3498db;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .info-item p {
+            margin: 0;
+            color: #ecf0f1;
+            line-height: 1.6;
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
+        .panel-card {
+            background: #081018;
+            border: 1px solid #122028;
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .table-container {
+            margin-top: 8px;
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            display: none;
+            background: #0f1722;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        table.active {
+            display: table;
+        }
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #1b2834;
+            text-align: center;
+            font-size: 12px;
+            color: #e7eef5;
+        }
+        th {
+            background-color: #11202c;
+            color: #cfe4ff;
+        }
+        .ref-note {
+            font-size: 12px;
+            color: #9fb3c8;
+            margin-top: 8px;
+        }
+        ::selection {
+            background: rgba(231, 76, 60, 0.5);
+            color: #fff;
+        }
+        ::-moz-selection {
+            background: rgba(231, 76, 60, 0.5);
+            color: #fff;
+        }
+        .text-selected {
+            background-color: rgba(231, 76, 60, 0.3) !important;
+            transition: background-color 0.3s ease;
+        }
+        .geometry {
+            position: absolute;
+            bottom: 4px;
+            right: 6px;
+            font-size: var(--symbol-size);
+            color: var(--symbol-color);
+            z-index: 4;
+        }
+        .cosmic-tag {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            font-size: 8px;
+            background-color: rgba(52, 152, 219, 0.7);
+            color: white;
+            padding: 1px 3px;
+            border-radius: 3px;
+            z-index: 5;
+        }
+        .symbol-1::after { content: "•"; }
+        .symbol-2::after { content: "—"; }
+        .symbol-3::after { content: "△"; }
+        .symbol-4::after { content: "□"; }
+        .symbol-5::after { content: "★"; }
+        .symbol-6::after { content: "⬡"; }
+        .symbol-7::after { content: "●"; }
+        .symbol-8::after { content: "∞"; }
+        .symbol-9::after { content: "§"; }
+        @media (max-width: 1000px) {
+            .sidepanel {
+                width: 100%;
+            }
+            textarea {
+                width: 100%;
+            }
+            .house-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .house-header .house-number {
+                font-size: 50px;
+            }
+            .house-header h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">لوحة أسماء الله الحسنى مع تحليل الجمل المتكامل</div>
+            <div class="small-note">الترتيب داخل المربعات: من الأعلى للأسفل، وفي كل صف من اليمين إلى الشمال</div>
+            <div class="small-note">اضغط مرتين على أي مربع لعرض تفاصيل المنزلة القمرية والخاتم السليماني</div>
+            <div class="small-note">اضغط بزر الماوس الأيمن لتحديد النص ثم اضغط مرة أخرى لنسخه</div>
+        </div>
+        <div class="controls">
+            <button class="btn btn-main" id="btnLoad">تحميل النص</button>
+            <button class="btn btn-ghost" id="btnReset">إعادة ضبط</button>
+            <button class="btn" id="btnRandom">تلوين عشوائي</button>
+            <button class="btn btn-spectrum" id="btnSpectrum">ألوان الطيف</button>
+            <button class="btn" id="btnPrev">الرجوع</button>
+            <button class="btn btn-main" id="btnNext">التالي</button>
+            <button class="btn" id="btnSubmit" style="background: #2ecc71">التقديم</button>
+        </div>
+    </div>
+    <div class="wrapper">
+        <div class="board-wrap">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="slider-row">
+                    <label class="small-note">حجم الخانة:</label>
+                    <input type="range" id="sizeRange" min="40" max="2500" value="80" />
+                    <span id="sizeValue" class="small-note">80px</span>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <label class="small-note">وضع الكشف:</label>
+                    <select id="mode">
+                        <option value="hover">كشف بالحركة</option>
+                        <option value="click">كشف بالنقر</option>
+                        <option value="manual">يدوي (التالي/الرجوع)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid" id="grid" aria-label="لوحة 8×8"></div>
+            <div class="row-numbers" id="rowNumbers"></div>
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px;">
+                <div class="small-note">عند المرور بالفأرة أو التقديم ستُعرض الكلمات بالتتابع</div>
+            </div>
+        </div>
+        <div class="sidepanel">
+            <label class="small-note">أدخل النص (كل كلمة مفصولة بمسافة أو سطر):</label>
+            <textarea id="textInput" placeholder="ألصق نصّك هنا..."></textarea>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-main" id="btnLoadFromInput">تحميل من الحقل</button>
+                <button class="btn btn-ghost" id="btnFillDemo">ملأ تجريبي</button>
+            </div>
+            <div class="status">
+                <div>مُكشوف: <span id="revealedCount">0</span> / 64</div>
+                <div style="margin-top: 6px">الكلمة الحالية: <span id="currentWord">—</span></div>
+                <div style="margin-top: 6px" class="small-note">الحروف الأبجدية المعتمدة تحت الرقم: الألف → الباء → التاء ... ثم تعاد كل 28 حرفاً</div>
+                <div style="margin-top: 6px" class="small-note">البرج: رقم من 1 إلى 12 يُعاد من جديد بعد 12</div>
+                <div style="margin-top: 6px" class="small-note">اضغط مرتين على أي مربع لعرض المنزل القمري والخاتم السليماني</div>
+                <div style="margin-top: 6px" class="small-note">اضغط بزر الماوس الأيمن لتحديد النص ثم اضغط مرة أخرى لنسخه</div>
+            </div>
+            <div class="panel-card">
+                <div style="font-weight: 700; margin-bottom: 6px">🌙 مولد الرسائل القمرية المتقدم</div>
+                <div class="small-note" style="margin-bottom: 6px">اختر التاريخ لتحليل المنزلة القمرية (الدورة مبنية على 28 يوماً اعتباراً من 2024-04-07)</div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+                    <input type="date" id="dateInput" value="2024-04-07">
+                    <button class="btn" id="btnAnalyze" style="background: #00b894">تحليل المنزلة</button>
+                    <button class="btn btn-ghost" id="btnToggleTables">تبديل الجداول</button>
+                </div>
+                <div id="output" class="small-note" style="margin-top: 10px"></div>
+                <div class="table-container">
+                    <table id="mainTable" class="active">
+                        <thead>
+                            <tr>
+                                <th>اليوم</th>
+                                <th>المنزلة</th>
+                                <th>الحرف</th>
+                                <th>الزاوية</th>
+                                <th>الدلالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mansionBody"></tbody>
+                    </table>
+                    <table id="abumasharTable">
+                        <thead>
+                            <tr>
+                                <th>المنزلة</th>
+                                <th>الدرجة</th>
+                                <th>الحرف السري</th>
+                                <th>الخاصية الروحانية</th>
+                            </tr>
+                        </thead>
+                        <tbody id="abumasharBody"></tbody>
+                    </table>
+                </div>
+                <div class="ref-note">
+                    لمعلومات أكثر تفصيلاً، قم بزيارة:
+                    <a href="https://kharta.website/%D8%A7%D9%84%D8%AE%D8%A7%D8%B1%D8%B7%D8%A9-%D8%A7%D9%84%D9%81%D9%84%D9%83%D9%8A%D8%A9/" target="_blank" rel="noopener">المركز الفلكي العالمي</a>
+                </div>
+            </div>
+            <div style="background: #071018; padding: 8px; border-radius: 8px; margin-top: 8px;">
+                <div style="font-weight: 700; margin-bottom: 6px">قائمة ألوان الطيف (مع السر/الحكمة)</div>
+                <div id="rainbowLegend" class="small-note"></div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">يمكنك تكبير اللوحة حتى 2500px. العناصر الصغيرة (رقم المربع، الحرف الأبجدي، البرج) ثابتة في كل مربع. تمت إضافة أسماء الله الحسنى ودورة أيام الأسبوع (1→7) وتكامل مولد المنازل القمرية والخاتم السليماني.</div>
+    <div id="houseModal" class="house-modal" style="display: none;">
+        <div class="house-container">
+            <div class="house-header">
+                <h2 id="modalHouseName">المنزل القمري</h2>
+                <div class="house-number" id="modalHouseNumber">1</div>
+            </div>
+            <div class="house-content">
+                <div class="house-info">
+                    <h3>معلومات المنزل</h3>
+                    <div class="info-item">
+                        <strong>الحرف الأبجدي</strong>
+                        <p id="modalHouseLetter">أ</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>البرج الفلكي</strong>
+                        <p id="modalHouseZodiac">الحمل (1) - ناري</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>قيمة الجمل</strong>
+                        <p id="modalHouseGematria">1</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>عدد الدورات</strong>
+                        <p id="modalHouseCycle">1</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>اسم المنزلة (من الجدول المتقدم)</strong>
+                        <p id="modalMansionName">الشرطان</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الحرف الكوني</strong>
+                        <p id="modalMansionLetter">أ</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الزاوية القمرية</strong>
+                        <p id="modalMansionAngle">0°</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الدلالة</strong>
+                        <p id="modalMansionMeaning">بداية المشاريع الجديدة</p>
+                    </div>
+                </div>
+                <div class="house-info">
+                    <h3>خصائص المنزل</h3>
+                    <div class="info-item">
+                        <strong>الطاقة</strong>
+                        <p id="modalHouseEnergy">عالية، بداية جديدة، طاقة متجددة</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>التأثير</strong>
+                        <p id="modalHouseInfluence">يمنح القوة والعزيمة لبدء المشاريع</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الفوائد</strong>
+                        <p id="modalHouseBenefits">التخطيط، البدايات الجديدة، القيادة</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>التحديات</strong>
+                        <p id="modalHouseChallenges">الاندفاع الزائد، قلة الصبر</p>
+                    </div>
+                </div>
+                <div class="house-info" style="grid-column: span 2;">
+                    <h3>الخاتم السليماني</h3>
+                    <div class="info-item">
+                        <strong>حرف الحرب</strong>
+                        <p id="modalSealWar"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الطلسم</strong>
+                        <p id="modalSealTalisman"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>قوة الحرف</strong>
+                        <p id="modalSealLetterPower"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الأسماء العربية</strong>
+                        <p id="modalSealArabicNames"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الأسماء السريانية</strong>
+                        <p id="modalSealSyriacNames"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الأيام</strong>
+                        <p id="modalSealDays"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الدراري (النجوم)</strong>
+                        <p id="modalSealStars"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>التلاصم</strong>
+                        <p id="modalSealAdhesives"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الأعوان الأرضية</strong>
+                        <p id="modalSealEarthlyHelpers"></p>
+                    </div>
+                    <div class="info-item">
+                        <strong>الملوك العلوية</strong>
+                        <p id="modalSealHeavenlyKings"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-modal" id="closeHouseModal">&times;</button>
+    </div>
+    <script>
+        /* ---------- إعداد البيانات الثابتة ---------- */
+        const arabicLetters = ["أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
+        const abjadMap = {
+            "ا": 1, "أ": 1, "إ": 1, "آ": 1, "ب": 2, "ج": 3, "د": 4, "ه": 5, "ة": 5, "و": 6, "ز": 7, "ح": 8, "ط": 9,
+            "ي": 10, "ى": 10, "ك": 20, "ل": 30, "م": 40, "ن": 50, "س": 60, "ع": 70, "ف": 80, "ص": 90, "ق": 100,
+            "ر": 200, "ش": 300, "ت": 400, "ث": 500, "خ": 600, "ذ": 700, "ض": 800, "ظ": 900, "غ": 1000
+        };
+        
+        // ✨ تعريف متسلسلة فيبوناتشي (64 عنصراً)
+        const generateFibonacci = (n) => {
+            let fib = [0, 1];
+            for (let i = 2; i < n; i++) fib[i] = fib[i-1] + fib[i-2];
+            return fib.slice(0, n);
+        };
+        const FIBONACCI_SEQUENCE = generateFibonacci(64);
+        
+        // ✨ تعريف الرموز الهندسية
+        const GEO_SYMBOLS = ["•", "—", "△", "□", "★", "⬡", "●", "∞", "§"];
+        const GEO_SYMBOLS_MAP = {};
+        FIBONACCI_SEQUENCE.forEach((num, idx) => {
+            const reduced = (num.toString().split('').reduce((a, b) => (+a) + (+b), 0) - 1) % GEO_SYMBOLS.length;
+            GEO_SYMBOLS_MAP[idx] = GEO_SYMBOLS[reduced >= 0 ? reduced : -reduced] || "•";
+        });
+        
+        const rainbow = [
+            { cls: 'spec-0', color: '#FF1744', name: 'أحمر', meaning: 'القوة والحماس' },
+            { cls: 'spec-1', color: '#FF9100', name: 'برتقالي', meaning: 'الإبداع والطاقة' },
+            { cls: 'spec-2', color: '#FFD600', name: 'أصفر', meaning: 'النور والمعرفة' },
+            { cls: 'spec-3', color: '#00C853', name: 'أخضر', meaning: 'السلام والنمو' },
+            { cls: 'spec-4', color: '#00B0FF', name: 'أزرق', meaning: 'الهدوء والحكمة' },
+            { cls: 'spec-5', color: '#651FFF', name: 'نيلي', meaning: 'الروحانية والتأمل' },
+            { cls: 'spec-6', color: '#D500F9', name: 'بنفسجي', meaning: 'الصفاء والإلهام' }
+        ];
+        const zodiacSigns = [
+            { name: "الحمل", element: "ناري" },
+            { name: "الثور", element: "ترابي" },
+            { name: "الجوزاء", element: "هوائي" },
+            { name: "السرطان", element: "مائي" },
+            { name: "الأسد", element: "ناري" },
+            { name: "العذراء", element: "ترابي" },
+            { name: "الميزان", element: "هوائي" },
+            { name: "العقرب", element: "مائي" },
+            { name: "القوس", element: "ناري" },
+            { name: "الجدي", element: "ترابي" },
+            { name: "الدلو", element: "هوائي" },
+            { name: "الحوت", element: "مائي" }
+        ];
+        const elementColors = {
+            "ناري": "zodiac-fire",
+            "ترابي": "zodiac-earth",
+            "هوائي": "zodiac-air",
+            "مائي": "zodiac-water"
+        };
+        const housesInfo = [
+            { name: "بيت القوة والنور", energy: "عالية، بداية جديدة، طاقة متجددة", influence: "يمنح القوة والعزيمة لبدء المشاريع", benefits: "التخطيط، البدايات الجديدة، القيادة", challenges: "الاندفاع الزائد، قلة الصبر" },
+            { name: "بيت الحكمة والتوازن", energy: "متوازنة، هادئة، تأملية", influence: "يزيد من الحكمة والتفكير المنطقي", benefits: "التعلم، التخطيط الاستراتيجي، الحكمة", challenges: "المماطلة، الإفراط في التحليل" },
+            { name: "بيت التواصل والإبداع", energy: "إبداعية، تواصلية، اجتماعية", influence: "يعزز القدرة على التواصل والتعبير", benefits: "الإبداع، الكتابة، العلاقات", challenges: "التشتت، كثرة الكلام" },
+            { name: "بيت الاستقرار والأمان", energy: "ثابتة، مريحة، آمنة", influence: "يوفر الاستقرار والأمان النفسي", benefits: "الاستقرار، بناء الأسرة، الأمان", challenges: "الخوف من التغيير، الجمود" },
+            { name: "بيت المغامرة والتغيير", energy: "ديناميكية، مغامرة، تغيير", influence: "يشجع على المغامرة وتجربة الجديد", benefits: "التغيير، السفر، الاكتشاف", challenges: "التهور، عدم الاستقرار" },
+            { name: "بيت العمل والانضباط", energy: "منظمة، عملية، منضبطة", influence: "يعزز الانضباط والإنتاجية", benefits: "العمل، النظام، الإنجاز", challenges: "الإرهاق، الجمود في الروتين" },
+            { name: "بيت العلاقات والشراكات", energy: "اجتماعية، تعاونية، توافقية", influence: "يعزز العلاقات والشراكات الناجحة", benefits: "الزواج، الشراكة، الصداقة", challenges: "التبعية، فقدان الهوية" },
+            { name: "بيت التحول والعمق", energy: "كثيفة، تحولية، عميقة", influence: "يساعد في التحول الشخصي والنمو", benefits: "التحول، الشفاء، العمق النفسي", challenges: "الصدمات، الخوف من التغيير" },
+            { name: "بيت الحكمة والتوسع", energy: "موسعة، مثالية، حكيمة", influence: "يشجع على التوسع الفكري والروحي", benefits: "التعلم العالي، الفلسفة، السفر", challenges: "الانفصال عن الواقع، المثالية المفرطة" },
+            { name: "بيت المسؤولية والطموح", energy: "طموحة، مسؤولة، عملية", influence: "يعزز الطموح والمسؤولية", benefits: "النجاح المهني، الطموح، الإنجاز", challenges: "العمل الزائد، الإهمال العاطفي" },
+            { name: "بيت الابتكار والصداقة", energy: "اجتماعية، مبتكرة، ودودة", influence: "يشجع على الابتكار وتكوين الصداقات", benefits: "الصداقات، الابتكار، العمل الجماعي", challenges: "التشتت، عدم الالتزام" },
+            { name: "بيت الحدس والأحلام", energy: "حدسية، حالمة، روحانية", influence: "يعزز الحدس والتواصل مع الذات الداخلية", benefits: "الأحلام، الحدس، الإبداع", challenges: "الهروب من الواقع، الإفراط في الأحلام" },
+            { name: "بيت الانتهاء والتحول", energy: "تحولية، نهائية، متجددة", influence: "يساعد في إنهاء الدورات والتحول", benefits: "التحول، النهايات، التجديد", challenges: "المقاومة للتغيير، الخوف من المجهول" },
+            { name: "بيت التوازن والانسجام", energy: "متوازنة، متناغمة، سلمية", influence: "يحقق التوازن والانسجام الداخلي", benefits: "السلام الداخلي، التوازن، الانسجام", challenges: "الخمول، عدم الحسم" },
+            { name: "بيت التحدي والنمو", energy: "تحدية، نمو، قوة", influence: "يشجع على مواجهة التحديات والنمو", benefits: "الصمود، القوة، التطور", challenges: "الصراعات، الضغط النفسي" },
+            { name: "بيت الإبداع والفرح", energy: "مبهجة، إبداعية، خفيفة", influence: "يعزز الإبداع والفرح الداخلي", benefits: "الإبداع، الفرح، التعبير الفني", challenges: "السطحية، عدم الجدية" },
+            { name: "بيت المعرفة والحقيقة", energy: "ذهنية، تحليلية، صادقة", influence: "يزيد من البحث عن المعرفة والحقيقة", benefits: "التعلم، البحث، الحكمة", challenges: "الشك المفرط، الجمود الفكري" },
+            { name: "بيت التغيير والتحرر", energy: "تحررية، تغيير، حرية", influence: "يساعد في التحرر من القيود", benefits: "الحرية، التغيير، التحرر", challenges: "الفوضى، عدم الاستقرار" },
+            { name: "بيت القيادة والسلطة", energy: "قيادية، سلطوية، قوية", influence: "يعزز القيادة والقدرة على التأثير", benefits: "القيادة، السلطة، التأثير", challenges: "التسلط، الغرور" },
+            { name: "بيت الحكمة العميقة", energy: "عميقة، حكيمة، تأملية", influence: "يزيد من الحكمة العميقة والفهم", benefits: "الحكمة، الفهم العميق، التأمل", challenges: "الانعزال، الجمود" },
+            { name: "بيت التعبير والإلهام", energy: "إلهامية، تعبيرية، فنية", influence: "يعزز التعبير الفني والإلهام", benefits: "الفن، الإلهام، التعبير", challenges: "التقلب المزاجي، الحساسية المفرطة" },
+            { name: "بيت العمل الجماعي", energy: "جماعية، تعاونية، توافقية", influence: "يشجع على العمل الجماعي والتعاون", benefits: "التعاون، العمل الجماعي، الدعم", challenges: "فقدان الهوية الفردية" },
+            { name: "بيت الابتكار والتجديد", energy: "مبتكرة، تجديدية، متطورة", influence: "يعزز الابتكار والتجديد", benefits: "الابتكار، التجديد، التطوير", challenges: "التسرع، عدم الاكتمال" },
+            { name: "بيت الحماية والرعاية", energy: "حامية، راعية، داعمة", influence: "يوفر الحماية والرعاية", benefits: "الحماية، الرعاية، الدعم", challenges: "التبعية، الخوف من الاستقلال" },
+            { name: "بيت المعرفة الكونية", energy: "كونية، شمولية، حكيمة", influence: "يزيد من الفهم الكوني والحكمة", benefits: "الحكمة الكونية، الفهم الشمولي", challenges: "الانفصال عن الواقع الأرضي" },
+            { name: "بيت التحول الروحي", energy: "روحانية، تحولية، عميقة", influence: "يساعد في التحول الروحي", benefits: "النمو الروحي، التحول الداخلي", challenges: "الهروب من المسؤوليات" },
+            { name: "بيت الإرادة والتنفيذ", energy: "قوية، منفذة، حاسمة", influence: "يعزز الإرادة والقدرة على التنفيذ", benefits: "الإرادة، التنفيذ، الإنجاز", challenges: "التصلب، عدم المرونة" },
+            { name: "بيت الإكمال والدورة", energy: "كاملة، دائرية، نهائية", influence: "يختتم الدورة ويعد لبداية جديدة", benefits: "الإكمال، الختام، الاستعداد للجديد", challenges: "التشبث بالماضي، الخوف من البدايات" }
+        ];
+        const MOON_MANSIONS = [
+            {
+                name: "الشرطان",
+                letter: "أ",
+                angle: 0,
+                meaning: "بداية المشاريع الجديدة",
+                seal: {
+                    war: "فرد حرب الفاء لها تهطيل نطه احد الشمس",
+                    talisman: "نجم مذهب رقيين",
+                    letterPower: "قوة الفاء في الحرب والتهطيل",
+                    arabicNames: "الشمس، القمر، الزهرة، عطارد",
+                    syriacNames: "شمسا، قمرا، زهرتا، عطاردو",
+                    days: "الأحد، الاثنين، الثلاثاء",
+                    stars: "الشعرى اليمانية، السماك الرامح",
+                    adhesives: "تلاصم النور والظلمة",
+                    earthlyHelpers: "الجن، الأرواح الأرضية",
+                    heavenlyKings: "ميكائيل، جبرائيل"
+                }
+            },
+            {
+                name: "البطين",
+                letter: "ب",
+                angle: 12.85,
+                meaning: "التوازن الروحي",
+                seal: {
+                    war: "حرب الباء للدفاع والحماية",
+                    talisman: "هلال فضي",
+                    letterPower: "قوة الباء في الحماية والدفاع",
+                    arabicNames: "المشتري، الزهرة، المريخ",
+                    syriacNames: "مشترى، زهرتا، مريخو",
+                    days: "الأربعاء، الخميس",
+                    stars: "النسر الواقع، النسر الطائر",
+                    adhesives: "تلاصم الأرض والسماء",
+                    earthlyHelpers: "الملائكة الأرضية",
+                    heavenlyKings: "عزرائيل، إسرافيل"
+                }
+            },
+            {
+                name: "الثريا",
+                letter: "ج",
+                angle: 25.71,
+                meaning: "الاتصال الكوني",
+                seal: {
+                    war: "حرف الجيم جبار مهما تعطيه",
+                    talisman: "شمس ذهبية",
+                    letterPower: "قوة الجيم في الجبروت والقوة",
+                    arabicNames: "الشمس، القمر， زحل",
+                    syriacNames: "شمسا， قمرا， زحال",
+                    days: "الجمعة، السبت",
+                    stars: "الثريا، الدبران",
+                    adhesives: "تلاصم النار والماء",
+                    earthlyHelpers: "العفاريت النارية",
+                    heavenlyKings: "جبريل، ميكائيل"
+                }
+            },
+            {
+                name: "الدبران",
+                letter: "د",
+                angle: 38.57,
+                meaning: "القوة الداخلية",
+                seal: {
+                    war: "حرب الدال للقوة والصلابة",
+                    talisman: "درع حديدي",
+                    letterPower: "قوة الدال في الصلابة والمتانة",
+                    arabicNames: "المريخ، الزهرة، عطارد",
+                    syriacNames: "mريخو، زهرتا، عطاردو",
+                    days: "الأحد، الاثنين",
+                    stars: "الدبران، قلب العقرب",
+                    adhesives: "تلاصم الحديد والنار",
+                    earthlyHelpers: "الجن المعدني",
+                    heavenlyKings: "عزرائيل، ميكائيل"
+                }
+            },
+            {
+                name: "الهقعة",
+                letter: "ه",
+                angle: 51.43,
+                meaning: "الحماية الإلهية",
+                seal: {
+                    war: "حرب الهاء للستر والحماية",
+                    talisman: "خاتم فضي",
+                    letterPower: "قوة الهاء في الحماية والستر",
+                    arabicNames: "القمر، المشتري، زحل",
+                    syriacNames: "قمرa, مشترى， زحال",
+                    days: "الثلاثاء، الأربعاء",
+                    stars: "سهيل، فم الحوت",
+                    adhesives: "تلاصم الماء والهواء",
+                    earthlyHelpers: "أرواح الماء",
+                    heavenlyKings: "جبرائيل، رافائيل"
+                }
+            },
+            {
+                name: "الهنعة",
+                letter: "و",
+                angle: 64.28,
+                meaning: "الرحمة السماوية",
+                seal: {
+                    war: "حرب الواو للرحمة والمغفرة",
+                    talisman: "سحابة بيضاء",
+                    letterPower: "قوة الواو في الرحمة والعطف",
+                    arabicNames: "الزهرة، عطارد، الشمس",
+                    syriacNames: "زهرتا， عطاردو، شمسa",
+                    days: "الخميس، الجمعة",
+                    stars: "الرشا، الفرق",
+                    adhesives: "تلاصم السحاب والمطر",
+                    earthlyHelpers: "أرواح الهواء",
+                    heavenlyKings: "إسرافيل، عزرائيل"
+                }
+            },
+            {
+                name: "الذراع",
+                letter: "ز",
+                angle: 77.14,
+                meaning: "القوة الجسدية",
+                seal: {
+                    war: "حرب الزاي للقوة والضرب",
+                    talisman: "سيف فولاذي",
+                    letterPower: "قوة الزاي في الضرب والهجوم",
+                    arabicNames: "المريخ، زحل، القمر",
+                    syriacNames: "mريخو， زحال， قمرa",
+                    days: "السبت، الأحد",
+                    stars: "ذات الكرسي، الفكة",
+                    adhesives: "تلاصم النار والحديد",
+                    earthlyHelpers: "الجن المحارب",
+                    heavenlyKings: "ميكائيل، جبرائيل"
+                }
+            },
+            {
+                name: "النثرة",
+                letter: "ح",
+                angle: 90.0,
+                meaning: "البصيرة النافذة",
+                seal: {
+                    war: "حرب الحاء للرؤية والاستبصار",
+                    talisman: "عين ذهبية",
+                    letterPower: "قوة الحاء في البصيرة والرؤية",
+                    arabicNames: "عطارد، الشمس، الزهرة",
+                    syriacNames: "عطاردو، شمسa， زهرتا",
+                    days: "الاثنين، الثلاثاء",
+                    stars: "النثرة، الطرفة",
+                    adhesives: "تلاصم النور والعتمة",
+                    earthlyHelpers: "أرواح النور",
+                    heavenlyKings: "رافائيل، عزرائيل"
+                }
+            },
+            {
+                name: "الطرفة",
+                letter: "ط",
+                angle: 102.85,
+                meaning: "التجديد الروحي",
+                seal: {
+                    war: "حرب الطاء للتجديد والتحول",
+                    talisman: "وردة ذهبية",
+                    letterPower: "قوة الطاء في التجديد والتحول",
+                    arabicNames: "الزهرة، المريخ، المشتري",
+                    syriacNames: "زهرتا， mريخo， مشترى",
+                    days: "الأربعاء، الخميس",
+                    stars: "الطرفة، الجبهة",
+                    adhesives: "تلاصم التراب والماء",
+                    earthlyHelpers: "أرواح الأرض",
+                    heavenlyKings: "عزرائيل، جبرائيل"
+                }
+            },
+            {
+                name: "الجبهة",
+                letter: "ي",
+                angle: 115.71,
+                meaning: "الشجاعة الأدبية",
+                seal: {
+                    war: "حرب الياء للشجاعة والجرأة",
+                    talisman: "سهم ذهبي",
+                    letterPower: "قوة الياء في الشجاعة والجرأة",
+                    arabicNames: "عطارد، القمر، الشمس",
+                    syriacNames: "عطاردو， قمرa, شمسa",
+                    days: "الجمعة، السبت",
+                    stars: "الجبهة، الزبرة",
+                    adhesives: "تلاصم الهواء والنار",
+                    earthlyHelpers: "أرواح الهواء النارية",
+                    heavenlyKings: "ميكائيل، رافائيل"
+                }
+            },
+            {
+                name: "الزبرة",
+                letter: "ك",
+                angle: 128.57,
+                meaning: "الحكمة العملية",
+                seal: {
+                    war: "حرب الكاف للحكمة والتدبير",
+                    talisman: "كتاب مقدس",
+                    letterPower: "قوة الكاف في الحكمة والتدبير",
+                    arabicNames: "زحل، المشتري، المريخ",
+                    syriacNames: "زحال， مشترى， mريخo",
+                    days: "الأحد، الاثنين",
+                    stars: "الزبرة، الصرفة",
+                    adhesives: "تلاصم المعرفة والعمل",
+                    earthlyHelpers: "أرواح الحكمة",
+                    heavenlyKings: "جبرائيل، إسرافيل"
+                }
+            },
+            {
+                name: "الصرفة",
+                letter: "ل",
+                angle: 141.43,
+                meaning: "التغيير الإيجابي",
+                seal: {
+                    war: "حرب اللام للتغيير والتحول",
+                    talisman: "رياح متغيرة",
+                    letterPower: "قوة اللام في التغيير والتحول",
+                    arabicNames: "الشمس، الزهرة، عطارد",
+                    syriacNames: "شمسa， زهرتا، عطاردo",
+                    days: "الثلاثاء، الأربعاء",
+                    stars: "الصرفة، العواء",
+                    adhesives: "تلاصم الثبات والتغيير",
+                    earthlyHelpers: "أرواح الرياح",
+                    heavenlyKings: "رفائيل، عزرائيل"
+                }
+            },
+            {
+                name: "العواء",
+                letter: "م",
+                angle: 154.28,
+                meaning: "القيادة الحكيمة",
+                seal: {
+                    war: "حرب الميم للقيادة والحكمة",
+                    talisman: "صولجان ملكي",
+                    letterPower: "قوة الميم في القيادة والحكمة",
+                    arabicNames: "القمر، المريخ، الزهرة",
+                    syriacNames: "قمرa, mريخo， زهرتا",
+                    days: "الخميس، الجمعة",
+                    stars: "العواء، السماك",
+                    adhesives: "تلاصم السلطة والمسؤولية",
+                    earthlyHelpers: "الجن الملكي",
+                    heavenlyKings: "ميكائيل، جبرائيل"
+                }
+            },
+            {
+                name: "السماك",
+                letter: "ن",
+                angle: 167.14,
+                meaning: "العدالة الكونية",
+                seal: {
+                    war: "حرب النون للعدل والإنصاف",
+                    talisman: "ميزان ذهبي",
+                    letterPower: "قوة النون في العدل والإنصاف",
+                    arabicNames: "الزهرة، عطارد، القمر",
+                    syriacNames: "زهرتا， عطاردo， قمرa",
+                    days: "السبت، الأحد",
+                    stars: "السماك، الغفر",
+                    adhesives: "تلاصم الحق والعدل",
+                    earthlyHelpers: "أرواح العدالة",
+                    heavenlyKings: "عزرائيل، رافائيل"
+                }
+            },
+            {
+                name: "الغفر",
+                letter: "س",
+                angle: 180.0,
+                meaning: "المغفرة الإلهية",
+                seal: {
+                    war: "حرب السين للمغفرة والرحمة",
+                    talisman: "غيمة ممطرة",
+                    letterPower: "قوة السين في المغفرة والرحمة",
+                    arabicNames: "عطارد، الشمس، المريخ",
+                    syriacNames: "عطاردo， شمسa, mريخo",
+                    days: "الاثنين، الثلاثاء",
+                    stars: "الغفر، الزبانا",
+                    adhesives: "تلاصم الرحمة والمغفرة",
+                    earthlyHelpers: "أرواح الرحمة",
+                    heavenlyKings: "جبرائيل، ميكائيل"
+                }
+            },
+            {
+                name: "الزبانا",
+                letter: "ع",
+                angle: 192.85,
+                meaning: "التوازن المادي",
+                seal: {
+                    war: "حرب العين للتوازن والاستقرار",
+                    talisman: "بناء متوازن",
+                    letterPower: "قوة العين في التوازن والاستقرار",
+                    arabicNames: "المريخ، الزهرة، المشتري",
+                    syriacNames: "mريخo， زهرتا， مشترى",
+                    days: "الأربعاء، الخميس",
+                    stars: "الزبانا، الإكليل",
+                    adhesives: "تلاصم المادة والروح",
+                    earthlyHelpers: "أرواح التوازن",
+                    heavenlyKings: "رفائيل، عزرائيل"
+                }
+            },
+            {
+                name: "الإكليل",
+                letter: "ف",
+                angle: 205.71,
+                meaning: "التاج الروحي",
+                seal: {
+                    war: "حرب الفاء للروحانية والقداسة",
+                    talisman: "تاج ملكي",
+                    letterPower: "قوة الفاء في الروحانية والقداسة",
+                    arabicNames: "الشمس، القمر، زحل",
+                    syriacNames: "شمسa, قمرa, زحال",
+                    days: "الجمعة، السبت",
+                    stars: "الإكليل، القلب",
+                    adhesives: "تلاصم الملكوت والروح",
+                    earthlyHelpers: "الملائكة الروحية",
+                    heavenlyKings: "جبرائيل، ميكائيل"
+                }
+            },
+            {
+                name: "القلب",
+                letter: "ص",
+                angle: 218.57,
+                meaning: "مركز الطاقة",
+                seal: {
+                    war: "حرب الصاد للطاقة والقوة",
+                    talisman: "قلب نابض",
+                    letterPower: "قوة الصاد في الطاقة والقوة",
+                    arabicNames: "الزهرة، عطارد، المريخ",
+                    syriacNames: "زهرتا، عطاردo， mريخo",
+                    days: "الأحد، الاثنين",
+                    stars: "القلب، الشولة",
+                    adhesives: "تلاصم القوة والضعف",
+                    earthlyHelpers: "أرواح الطاقة",
+                    heavenlyKings: "عزرائيل، رافائيل"
+                }
+            },
+            {
+                name: "الشولة",
+                letter: "ق",
+                angle: 231.43,
+                meaning: "التحول الكبير",
+                seal: {
+                    war: "حرب القاف للتحول والتغيير الجذري",
+                    talisman: "فراشة متحولة",
+                    letterPower: "قوة القاف في التحول والتغيير",
+                    arabicNames: "القمر، الشمس، المشتري",
+                    syriacNames: "قمرa, شمسa, مشترى",
+                    days: "الثلاثاء، الأربعاء",
+                    stars: "الشولة، النعائم",
+                    adhesives: "تلاصm الثبات والتحول",
+                    earthlyHelpers: "أرواح التحول",
+                    heavenlyKings: "ميكائيل، جبرائيل"
+                }
+            },
+            {
+                name: "النعائم",
+                letter: "ر",
+                angle: 244.28,
+                meaning: "البركات السماوية",
+                seal: {
+                    war: "حرب الراء للبركة والوفرة",
+                    talisman: "سلة خيرات",
+                    letterPower: "قوة الراء في البركة والوفرة",
+                    arabicNames: "عطارد، الزهرة، القمر",
+                    syriacNames: "عطاردo， زهرتا， قمرa",
+                    days: "الخميس، الجمعة",
+                    stars: "النعائم، البلدة",
+                    adhesives: "تلاصم العطاء والبركة",
+                    earthlyHelpers: "أرواح البركة",
+                    heavenlyKings: "رفائيل، عزرائيل"
+                }
+            },
+            {
+                name: "البلدة",
+                letter: "ش",
+                angle: 257.14,
+                meaning: "الاستقرار الأرضي",
+                seal: {
+                    war: "حرب الشين للاستقرار والثبات",
+                    talisman: "صخرة ثابتة",
+                    letterPower: "قوة الشين في الاستقرار والثبات",
+                    arabicNames: "المريخ، زحل، الشمس",
+                    syriacNames: "mريخo， زحال، شمسa",
+                    days: "السبت، الأحد",
+                    stars: "البلدة، سعد الذابح",
+                    adhesives: "تلاصم الأرض والاستقرار",
+                    earthlyHelpers: "أرواح الأرض الثابتة",
+                    heavenlyKings: "جبرائيل، mيكائيل"
+                }
+            },
+            {
+                name: "سعد الذابح",
+                letter: "ت",
+                angle: 270.0,
+                meaning: "التضحية الإيجابية",
+                seal: {
+                    war: "حرب التاء للتضحية والفداء",
+                    talisman: "سكين مقدسة",
+                    letterPower: "قوة التاء في التضحية والفداء",
+                    arabicNames: "الزهرة، المشتري، عطارد",
+                    syriacNames: "زهرتا، مشترى، عطاردo",
+                    days: "الاثنين، الثلاثاء",
+                    stars: "سعد الذابح، سعد بلع",
+                    adhesives: "تلاصم العطاء والتضحية",
+                    earthlyHelpers: "أرواح التضحية",
+                    heavenlyKings: "عزرائيل، رافائيل"
+                }
+            },
+            {
+                name: "سعد بلع",
+                letter: "ث",
+                angle: 282.85,
+                meaning: "القبول الإلهي",
+                seal: {
+                    war: "حرب الثاء للقبول والرضا",
+                    talisman: "يد مفتوحة",
+                    letterPower: "قوة الثاء في القبول والرضا",
+                    arabicNames: "القمر، المريخ، الزهرة",
+                    syriacNames: "قمرa, mريخo， زهرتا",
+                    days: "الأربعاء، الخميس",
+                    stars: "سعد بلع، سعد السعود",
+                    adhesives: "تلاصم القبول والرفض",
+                    earthlyHelpers: "أرواح القبول",
+                    heavenlyKings: "mيكائيل، جبرائيل"
+                }
+            },
+            {
+                name: "سعد السعود",
+                letter: "خ",
+                angle: 295.71,
+                meaning: "السعادة الدائمة",
+                seal: {
+                    war: "حرب الخاء للسعادة والفرح",
+                    talisman: "وجه مبتسم",
+                    letterPower: "قوة الخاء في السعادة والفرح",
+                    arabicNames: "الشمس، عطارد، القمر",
+                    syriacNames: "شمسa, عطاردo， قمرa",
+                    days: "الجمعة، السبت",
+                    stars: "سعد السعود، سعد الأخبية",
+                    adhesives: "تلاصم الفرح والحزن",
+                    earthlyHelpers: "أرواح الفرح",
+                    heavenlyKings: "رفائيل، عزرائيل"
+                }
+            },
+            {
+                name: "سعد الأخبية",
+                letter: "ذ",
+                angle: 308.57,
+                meaning: "الأسرار الكونية",
+                seal: {
+                    war: "حرب الذال للأسرار والخفايا",
+                    talisman: "صندوق مغلق",
+                    letterPower: "قوة الذال في الأسرار والخفايا",
+                    arabicNames: "المشتري، المريخ، الزهرة",
+                    syriacNames: "mشترى، mريخo، زهرتا",
+                    days: "الأحد، الاثنين",
+                    stars: "سعد الأخبية، المقدم",
+                    adhesives: "تلاصم الظاهر والباطن",
+                    earthlyHelpers: "أرواح الأسرار",
+                    heavenlyKings: "جبرائيل، mيكائيل"
+                }
+            },
+            {
+                name: "المقدم",
+                letter: "ض",
+                angle: 321.43,
+                meaning: "البدايات الجديدة",
+                seal: {
+                    war: "حرب الضاد للبدايات والتأسيس",
+                    talisman: "بذرة نابتة",
+                    letterPower: "قوة الضاد في البدايات والتأسيس",
+                    arabicNames: "عطارد، القمر، الشمس",
+                    syriacNames: "عطاردo، قمرa, شمسa",
+                    days: "الثلاثاء، الأربعاء",
+                    stars: "المقدم، المؤخر",
+                    adhesives: "تلاصم البداية والنهاية",
+                    earthlyHelpers: "أرواح البدايات",
+                    heavenlyKings: "عزرائيل، رافائيل"
+                }
+            },
+            {
+                name: "المؤخر",
+                letter: "ظ",
+                angle: 334.28,
+                meaning: "إنهاء المراحل",
+                seal: {
+                    war: "حرب الظاء للنهايات والختام",
+                    talisman: "نهاية الطريق",
+                    letterPower: "قوة الظاء في النهايات والختام",
+                    arabicNames: "الزهرة، الشمس، المريخ",
+                    syriacNames: "زهرتا، شمسa, mريخo",
+                    days: "الخميس، الجمعة",
+                    stars: "المؤخر، الرشاء",
+                    adhesives: "تلاصم البداية والنهاية",
+                    earthlyHelpers: "أرواح النهايات",
+                    heavenlyKings: "mيكائيل، جبرائيل"
+                }
+            },
+            {
+                name: "الرشاء",
+                letter: "غ",
+                angle: 347.14,
+                meaning: "الرشد الإلهي",
+                seal: {
+                    war: "حرب الغين للرشد والحكمة",
+                    talisman: "بوصلة ذهبية",
+                    letterPower: "قوة الغين في الرشد والحكمة",
+                    arabicNames: "القمر، عطارد، المشتري",
+                    syriacNames: "قمرa, عطاردo، مشترى",
+                    days: "السبت، الأحد",
+                    stars: "الرشاء، الشرطان",
+                    adhesives: "تلاصم الضلال والرشاد",
+                    earthlyHelpers: "أرواح الهداية",
+                    heavenlyKings: "رفائيل، عزرائيل"
+                }
+            }
+        ];
+        const ABU_MASHAR_TABLE = MOON_MANSIONS.map((item, index) => ({
+            name: item.name,
+            degree: item.angle.toFixed(2),
+            secret: String.fromCharCode(0x0600 + index + 1),
+            property: item.meaning
+        }));
+        const ASMA_UL_HUSNA = [
+            "الله", "الرحمن", "الرحيم", "الملك", "القدوس", "السلام", "المؤمن", "المهيمن", "العزيز", "الجبار",
+            "المتكبر", "الخالق", "البارئ", "المصور", "الغفار", "القهار", "الوهاب", "الرزاق", "الفتاح", "العليم",
+            "القابض", "الباسط", "الخافض", "الرافع", "المعز", "المذل", "السميع", "البصير", "الحكم", "العدل",
+            "اللطيف", "الخبير", "الحليم", "العظيم", "الغفور", "الشكور", "العلي", "الكبير", "الحفيظ", "المقيت",
+            "الحسيب", "الجليل", "الكريم", "الرقيب", "المجيب", "الواسع", "الحكيم", "الودود", "المجيد", "الباعث",
+            "الشهيد", "الحق", "الوكيل", "القوي", "المتين", "الولي", "الحميد", "المحصي", "المبدئ", "المعيد",
+            "المحيي", "المميت", "الحي", "القيوم", "الواجد", "الماجd", "الواحد", "الصمد", "القادر", "المقتدر",
+            "المقدم", "المؤخر", "الأول", "الآخر", "الظاهر", "الباطن", "الوالي", "المتعالي", "البر", "التواب",
+            "المنتقم", "العفو", "الرؤوف", "مالك الملك", "ذو الجلال والإكرام", "المقسط", "الجامع", "الغني", "المغني",
+            "المانع", "الضار", "النافع", "النور", "الهادي", "البديع", "الباقي", "الوارث", "الرشيد", "الصبور"
+        ];
+        const WEEK_DAYS = [
+            { name: "الأحد", num: 1, planet: "الشمس" },
+            { name: "الإثنين", num: 2, planet: "القمر" },
+            { name: "الثلاثاء", num: 3, planet: "المريخ" },
+            { name: "الأربعاء", num: 4, planet: "عطارد" },
+            { name: "الخميس", num: 5, planet: "المشتري" },
+            { name: "الجمعة", num: 6, planet: "الزهرة" },
+            { name: "السبت", num: 7, planet: "زحل" }
+        ];
+        const DAY_SERVANTS = {
+            "الأحد": { upper: "ميكائيل", middle: "عزرائيل", lower: "جبريل" },
+            "الإثنين": { upper: "رفائيل", middle: "سرويال", lower: "صديقائيل" },
+            "الثلاثاء": { upper: "سمائيل", middle: "نورائيل", lower: "عزرائيل" },
+            "الأربعاء": { upper: "عزرائيل", middle: "مالكائيل", lower: "كاسفائيل" },
+            "الخميس": { upper: "جبريل", middle: "صديقائيل", lower: "نورائيل" },
+            "الجمعة": { upper: "صديقائيل", middle: "كاسفائيل", lower: "سرويال" },
+            "السبت": { upper: "مالكائيل", middle: "ميكائيل", lower: "رفائيل" }
+        };
+        const SURAHS = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال",
+            "التوبة", "يونس", "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل",
+            "الإسراء", "الكهف", "مريم", "طه", "الأنبياء", "الحج", "المؤمنون", "النور",
+            "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم", "لقمان", "السجدة",
+            "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح",
+            "الحجرات", "ق", "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة",
+            "الحديد", "المجادلة", "الحشر", "الممتحنة", "الصف", "الجمعة", "المنافقون", "التغابن",
+            "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج", "نوح", "الجن", "المزمل", "المدثر",
+            "القيامة", "الإنسان", "المرsلات", "النبأ", "النازعات", "عبس", "التكوير", "الانفطار", "المطففين", "الانشقاق",
+            "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد", "الشمس", "الليل", "الضحى", "الشرح",
+            "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثr", "العصر", "الهمزة",
+            "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
+        const baseClasses = ['c-red', 'c-black', 'c-white'];
+        /* ---------- عناصر DOM ---------- */
+        const gridEl = document.getElementById('grid');
+        const rowNumbersEl = document.getElementById('rowNumbers');
+        const textInput = document.getElementById('textInput');
+        const btnLoad = document.getElementById('btnLoad');
+        const btnLoadFromInput = document.getElementById('btnLoadFromInput');
+        const btnReset = document.getElementById('btnReset');
+        const btnRandom = document.getElementById('btnRandom');
+        const btnSpectrum = document.getElementById('btnSpectrum');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnFillDemo = document.getElementById('btnFillDemo');
+        const revealedCountEl = document.getElementById('revealedCount');
+        const currentWordEl = document.getElementById('currentWord');
+        const modeSelect = document.getElementById('mode');
+        const sizeRange = document.getElementById('sizeRange');
+        const sizeValue = document.getElementById('sizeValue');
+        const rainbowLegend = document.getElementById('rainbowLegend');
+        const houseModal = document.getElementById('houseModal');
+        const modalHouseName = document.getElementById('modalHouseName');
+        const modalHouseNumber = document.getElementById('modalHouseNumber');
+        const modalHouseLetter = document.getElementById('modalHouseLetter');
+        const modalHouseZodiac = document.getElementById('modalHouseZodiac');
+        const modalHouseGematria = document.getElementById('modalHouseGematria');
+        const modalHouseCycle = document.getElementById('modalHouseCycle');
+        const modalHouseEnergy = document.getElementById('modalHouseEnergy');
+        const modalHouseInfluence = document.getElementById('modalHouseInfluence');
+        const modalHouseBenefits = document.getElementById('modalHouseBenefits');
+        const modalHouseChallenges = document.getElementById('modalHouseChallenges');
+        const modalMansionName = document.getElementById('modalMansionName');
+        const modalMansionLetter = document.getElementById('modalMansionLetter');
+        const modalMansionAngle = document.getElementById('modalMansionAngle');
+        const modalMansionMeaning = document.getElementById('modalMansionMeaning');
+        const modalSealWar = document.getElementById('modalSealWar');
+        const modalSealTalisman = document.getElementById('modalSealTalisman');
+        const modalSealLetterPower = document.getElementById('modalSealLetterPower');
+        const modalSealArabicNames = document.getElementById('modalSealArabicNames');
+        const modalSealSyriacNames = document.getElementById('modalSealSyriacNames');
+        const modalSealDays = document.getElementById('modalSealDays');
+        const modalSealStars = document.getElementById('modalSealStars');
+        const modalSealAdhesives = document.getElementById('modalSealAdhesives');
+        const modalSealEarthlyHelpers = document.getElementById('modalSealEarthlyHelpers');
+        const modalSealHeavenlyKings = document.getElementById('modalSealHeavenlyKings');
+        const closeHouseModal = document.getElementById('closeHouseModal');
+        const dateInput = document.getElementById('dateInput');
+        const btnAnalyze = document.getElementById('btnAnalyze');
+        const btnToggleTables = document.getElementById('btnToggleTables');
+        const outputEl = document.getElementById('output');
+        const mainTable = document.getElementById('mainTable');
+        const mansionBody = document.getElementById('mansionBody');
+        const abumasharTable = document.getElementById('abumasharTable');
+        const abumasharBody = document.getElementById('abumasharBody');
+        let BOARD = 8, TOTAL = BOARD * BOARD;
+        let words = Array.from({ length: TOTAL }, (_, i) => '');
+        let assignedClass = new Array(TOTAL).fill(null);
+        let revealed = new Array(TOTAL).fill(false);
+        let currentIndex = 0;
+        let cells = [];
+        let currentHouse = 0;
+        let houseCycleCount = 1;
+        let lastRightClickTime = 0;
+        let selectedCell = null;
+        /* ---------- وظائف المساعدة ---------- */
+        function cleanText(t) {
+            return t.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, '').trim();
+        }
+        function splitToWords(text) {
+            if (!text) return [];
+            const cleaned = text.replace(/[،!؟.؛,:()\"«»<>—–\-]/g, ' ');
+            const parts = cleaned.split(/\s+/).map(s => s.trim()).filter(Boolean);
+            return parts;
+        }
+        function computeAbjad(word) {
+            let s = cleanText(word).toLowerCase();
+            let total = 0;
+            for (let ch of s) {
+                if (abjadMap[ch]) total += abjadMap[ch];
+            }
+            return total;
+        }
+        // حساب الجمل مع إضافة رقم الحرف
+        function computeAbjadWithLetterPosition(word) {
+            let s = cleanText(word).toLowerCase();
+            let total = 0;
+            for (let i = 0; i < s.length; i++) {
+                const ch = s[i];
+                const letterValue = abjadMap[ch] || 0;
+                total += letterValue + (i + 1); // إضافة رقم الحرف (1-indexed)
+            }
+            return total;
+        }
+        // حساب الجمل مع طرح رقم الحرف
+        function computeAbjadWithLetterPositionSubtracted(word) {
+            let s = cleanText(word).toLowerCase();
+            let total = 0;
+            for (let i = 0; i < s.length; i++) {
+                const ch = s[i];
+                const letterValue = abjadMap[ch] || 0;
+                total += letterValue - (i + 1); // طرح رقم الحرف (1-indexed)
+            }
+            return total;
+        }
+        // حساب الجمل مع ترتيب الحروف
+        function computeAbjadWithLetterOrder(word) {
+            let s = cleanText(word).toLowerCase();
+            let total = 0;
+            for (let i = 0; i < s.length; i++) {
+                const ch = s[i];
+                const letterValue = abjadMap[ch] || 0;
+                total += letterValue * (i + 1); // ضرب القيمة بترتيب الحرف
+            }
+            return total;
+        }
+        // حساب الجمل مع متوسط الحروف
+        function computeAbjadWithAverage(word) {
+            let s = cleanText(word).toLowerCase();
+            let total = 0;
+            let letterCount = 0;
+            for (let ch of s) {
+                if (abjadMap[ch]) {
+                    total += abjadMap[ch];
+                    letterCount++;
+                }
+            }
+            return letterCount > 0 ? Math.round(total / letterCount) : 0;
+        }
+        // حساب الجمل مع جمع أرقام الحروف
+        function computeAbjadWithDigitSum(word) {
+            let s = cleanText(word).toLowerCase();
+            let total = 0;
+            for (let ch of s) {
+                if (abjadMap[ch]) {
+                    const value = abjadMap[ch];
+                    // جمع أرقام القيمة (مثل 28 → 2+8=10)
+                    let digitSum = 0;
+                    let num = value;
+                    while (num > 0) {
+                        digitSum += num % 10;
+                        num = Math.floor(num / 10);
+                    }
+                    total += digitSum;
+                }
+            }
+            return total;
+        }
+        // حساب القيمة النهائية (من 1 إلى 9)
+        function reduceToSingleDigit(number) {
+            while (number > 9) {
+                number = number.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+            }
+            return number;
+        }
+        // إيجاد اسم مطابق من 1 إلى 9
+        function findMatchingAsma(word) {
+            // حساب جميع القيم الممكنة
+            const calculations = [
+                { name: 'الكبير', calc: computeAbjad },
+                { name: 'الصغير', calc: computeAbjadWithLetterPosition },
+                { name: 'الأوسط', calc: computeAbjadWithLetterPositionSubtracted },
+                { name: 'الأصغر', calc: computeAbjadWithLetterOrder }
+            ];
+            const results = [];
+            for (const calc of calculations) {
+                const gematria = calc.calc(word);
+                const reducedGematria = reduceToSingleDigit(gematria);
+                const matchingAsma = [];
+                for (let i = 0; i < ASMA_UL_HUSNA.length; i++) {
+                    const asma = ASMA_UL_HUSNA[i];
+                    const asmaGematria = computeAbjad(asma);
+                    const reducedAsmaGematria = reduceToSingleDigit(asmaGematria);
+                    if (reducedAsmaGematria === reducedGematria) {
+                        matchingAsma.push({ name: asma, num: i + 1 });
+                    }
+                    if (matchingAsma.length >= 9) {
+                        break;
+                    }
+                }
+                if (matchingAsma.length > 0) {
+                    // ترتيب الأسماء من الأصغر إلى الأكبر
+                    matchingAsma.sort((a, b) => a.num - b.num);
+                    results.push({
+                        calculation: calc.name,
+                        gematria: gematria,
+                        reducedGematria: reducedGematria,
+                        matchingAsma: matchingAsma
+                    });
+                }
+            }
+            // ترتيب النتائج حسب أصغر رقم اسم
+            results.sort((a, b) => {
+                const minA = Math.min(...a.matchingAsma.map(m => m.num));
+                const minB = Math.min(...b.matchingAsma.map(m => m.num));
+                return minA - minB;
+            });
+            return results.length > 0 ? results[0] : null;
+        }
+        function getAsmaByIndex(i) {
+            const firstAsma = ASMA_UL_HUSNA[i] ? { name: ASMA_UL_HUSNA[i], num: i + 1 } : null;
+            const secondAsmaIndex = i + 64;
+            const secondAsma = (secondAsmaIndex < ASMA_UL_HUSNA.length) ?
+                { name: ASMA_UL_HUSNA[secondAsmaIndex], num: secondAsmaIndex + 1 } : null;
+            return { firstAsma, secondAsma };
+        }
+        function getWeekDayByIndex(i) {
+            const d = WEEK_DAYS[i % WEEK_DAYS.length];
+            return d;
+        }
+        function getKhadimByDayName(dayName) {
+            return DAY_SERVANTS[dayName] || { upper: "—", middle: "—", lower: "—" };
+        }
+        /* ---------- بناء اللوحة ---------- */
+        function buildGrid() {
+            gridEl.innerHTML = '';
+            cells = [];
+            for (let idx = 0; idx < TOTAL; idx++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell hidden';
+                cell.dataset.index = idx;
+                cell.dataset.house = idx % 28;
+                const num = document.createElement('div');
+                num.className = 'meta-num';
+                num.innerHTML = String(idx + 1);
+                cell.appendChild(num);
+                const letterDiv = document.createElement('div');
+                letterDiv.className = 'meta-letter';
+                const letter = arabicLetters[idx % arabicLetters.length];
+                letterDiv.innerHTML = letter;
+                cell.appendChild(letterDiv);
+                const tower = document.createElement('div');
+                tower.className = 'meta-tower';
+                const towerIdx = (idx % 12);
+                const sign = zodiacSigns[towerIdx];
+                const elementClass = elementColors[sign.element];
+                tower.innerHTML = `<span class="${elementClass}">${sign.name} (${towerIdx + 1})</span>`;
+                cell.appendChild(tower);
+                const wordEl = document.createElement('div');
+                wordEl.className = 'word';
+                wordEl.innerText = words[idx] || '';
+                cell.appendChild(wordEl);
+                const gemEl = document.createElement('div');
+                gemEl.className = 'gematria';
+                gemEl.innerText = words[idx] ? computeAbjad(words[idx]) : '';
+                cell.appendChild(gemEl);
+                const extras = document.createElement('div');
+                extras.className = 'extras';
+                extras.innerHTML = renderExtras(idx);
+                cell.appendChild(extras);
+                
+                // ✨ إضافة الرمز الهندسي من متسلسلة فيبوناتشي
+                const reducedValue = reduceToSingleDigit(FIBONACCI_SEQUENCE[idx] || idx + 1);
+                const geomCls = `symbol symbol-${reducedValue || 1}`;
+                const geomSymb = document.createElement('div');
+                geomSymb.className = 'geometry ' + geomCls;
+                cell.appendChild(geomSymb);
+                
+                // ✨ إضافة الكيان الكوني (القلم، اللوح، الكرسي، العرش)
+                if (idx % 7 === 0) {
+                    const cosmicTag = document.createElement('div');
+                    cosmicTag.className = 'cosmic-tag';
+                    cosmicTag.innerText = ['القلم', 'اللوح', 'الكرسي', 'العرش'][idx % 4];
+                    cell.appendChild(cosmicTag);
+                }
+                
+                cell.addEventListener('mouseenter', onCellHover);
+                cell.addEventListener('click', onCellClick);
+                cell.addEventListener('dblclick', onCellDoubleClick);
+                cell.addEventListener('contextmenu', onCellRightClick);
+                gridEl.appendChild(cell);
+                cells.push(cell);
+            }
+            applyAllBlackColors();
+            updateStatus();
+            buildRowNumbers();
+            renderRainbowLegend();
+        }
+        function renderExtras(idx) {
+            const asma = getAsmaByIndex(idx);
+            const firstSurah = SURAHS[idx];
+            const secondSurahIndex = idx + 65;
+            const secondSurah = (secondSurahIndex <= 114) ? SURAHS[secondSurahIndex - 1] : null;
+            const word = words[idx];
+            const matchingAsmaResult = word ? findMatchingAsma(word) : null;
+            // تجهيز النص لعرض النتائج
+            let matchingAsmaHTML = '';
+            if (matchingAsmaResult) {
+                const minAsma = Math.min(...matchingAsmaResult.matchingAsma.map(m => m.num));
+                matchingAsmaHTML = `
+                    <div class="part asm">
+                        <strong>الاسم المطابق (الأصغر: ${minAsma}):</strong>
+                        ${matchingAsmaResult.matchingAsma.map(asma => 
+                            `${asma.name} <span class="asm-num">(${asma.num})</span>`
+                        ).join('<br>')}
+                    </div>
+                    <div class="part calc-method">
+                        <strong>الحساب المستخدم: ${matchingAsmaResult.calculation}</strong>
+                        <div style="font-size:10px; margin-top:2px">القيمة: ${matchingAsmaResult.gematria} (مُختصر: ${matchingAsmaResult.reducedGematria})</div>
+                    </div>
+                `;
+            }
+            return `
+                <div class="part asm">
+                    ${asma.firstAsma ? asma.firstAsma.name + ' <span class="asm-num">(' + asma.firstAsma.num + ')</span>' : ''}
+                    ${asma.secondAsma ? '<br>' + asma.secondAsma.name + ' <span class="asm-num">(' + asma.secondAsma.num + ')</span>' : ''}
+                </div>
+                ${matchingAsmaHTML}
+                <div class="part surah">
+                    سورة: ${firstSurah} (${idx + 1})
+                    ${secondSurah ? '<br>سورة: ' + secondSurah + ' (' + secondSurahIndex + ')' : ''}
+                </div>
+                <div class="part day">اليوم: ${getWeekDayByIndex(idx).num} — ${getWeekDayByIndex(idx).name} • الكوكب: ${getWeekDayByIndex(idx).planet}</div>
+                <div class="part kh">خدام: العلوي: ${getKhadimByDayName(getWeekDayByIndex(idx).name).upper} • الوسطي: ${getKhadimByDayName(getWeekDayByIndex(idx).name).middle} • السفلي: ${getKhadimByDayName(getWeekDayByIndex(idx).name).lower}</div>
+            `;
+        }
+        function updateExtras(idx) {
+            const el = cells[idx].querySelector('.extras');
+            if (el) el.innerHTML = renderExtras(idx);
+        }
+        function buildRowNumbers() {
+            rowNumbersEl.innerHTML = '';
+            for (let i = 1; i <= BOARD; i++) {
+                const div = document.createElement('div');
+                div.textContent = i;
+                rowNumbersEl.appendChild(div);
+            }
+        }
+        /* ---------- تعديل الألوان لتكون جميعها سوداء ---------- */
+        function applyAllBlackColors() {
+            for (let idx = 0; idx < TOTAL; idx++) {
+                assignedClass[idx] = 'c-black';
+                cells[idx].className = 'cell hidden c-black';
+                cells[idx].querySelector('.word').innerText = words[idx] || '';
+                cells[idx].querySelector('.gematria').innerText = words[idx] ? computeAbjad(words[idx]) : '';
+                updateExtras(idx);
+            }
+        }
+        /* ---------- تحويل بين index و row/col ---------- */
+        function indexToRC(idx) {
+            const row = Math.floor(idx / BOARD);
+            const col = BOARD - 1 - (idx % BOARD);
+            return { r: row, c: col };
+        }
+        function rcToIndex(row, col) {
+            return row * BOARD + (BOARD - 1 - col);
+        }
+        /* ---------- تلوين عشوائي وألوان الطيف ---------- */
+        function randomColoring() {
+            for (let i = 0; i < TOTAL; i++) {
+                const cls = baseClasses[Math.floor(Math.random() * baseClasses.length)];
+                assignedClass[i] = cls;
+                cells[i].className = 'cell hidden ' + cls;
+            }
+        }
+        function rainbowColoring() {
+            for (let i = 0; i < TOTAL; i++) {
+                const obj = rainbow[i % rainbow.length];
+                cells[i].className = 'cell hidden ' + obj.cls;
+                assignedClass[i] = obj.cls;
+            }
+        }
+        /* ---------- كشف/إخفاء ---------- */
+        function revealIndex(i) {
+            if (i < 0 || i >= TOTAL) return;
+            if (!revealed[i]) {
+                revealed[i] = true;
+                cells[i].classList.remove('hidden');
+                cells[i].classList.add('visible');
+                cells[i].querySelector('.word').innerText = words[i] || '';
+                cells[i].querySelector('.gematria').innerText = words[i] ? computeAbjad(words[i]) : '';
+                updateExtras(i);
+                updateStatus();
+            }
+        }
+        function hideIndex(i) {
+            if (i < 0 || i >= TOTAL) return;
+            if (revealed[i]) {
+                revealed[i] = false;
+                cells[i].classList.remove('visible');
+                cells[i].classList.add('hidden');
+                updateStatus();
+            }
+        }
+        function revealNext() {
+            if (currentIndex >= TOTAL) return;
+            revealIndex(currentIndex);
+            currentIndex++;
+        }
+        function revealPrev() {
+            if (currentIndex <= 0) return;
+            currentIndex--;
+            hideIndex(currentIndex);
+        }
+        /* ---------- تفاعلات الفأرة والنقر ---------- */
+        let lastRevealTime = 0, throttle = 80;
+        function onCellHover(e) {
+            if (modeSelect.value !== 'hover') return;
+            const now = Date.now();
+            if (now - lastRevealTime < throttle) return;
+            lastRevealTime = now;
+            revealNext();
+        }
+        function onCellClick(e) {
+            if (modeSelect.value !== 'click') return;
+            const idx = Number(this.dataset ? this.dataset.index : e.currentTarget.dataset.index);
+            revealIndex(idx);
+            if (idx >= currentIndex) currentIndex = idx + 1;
+        }
+        /* ---------- عرض المنزل القمري والخاتم السليماني عند الضغط المزدوج ---------- */
+        function onCellDoubleClick(e) {
+            const idx = Number(this.dataset.index);
+            const houseIndex = parseInt(this.dataset.house);
+            const info = housesInfo[houseIndex];
+            const letter = arabicLetters[houseIndex];
+            const zodiacIndex = houseIndex % 12;
+            const zodiac = zodiacSigns[zodiacIndex];
+            const elementClass = elementColors[zodiac.element];
+            const gematria = abjadMap[letter] || (houseIndex + 1);
+            houseCycleCount = Math.floor(houseIndex / 28) + 1;
+            const mansion = MOON_MANSIONS[houseIndex];
+            const seal = mansion.seal || {};
+            modalHouseName.textContent = `${houseIndex + 1}. ${info.name}`;
+            modalHouseNumber.textContent = houseIndex + 1;
+            modalHouseLetter.textContent = letter;
+            modalHouseZodiac.innerHTML = `${zodiac.name} (${zodiacIndex + 1}) - <span class="${elementClass}">${zodiac.element}</span>`;
+            modalHouseGematria.textContent = gematria;
+            modalHouseCycle.textContent = houseCycleCount;
+            modalHouseEnergy.textContent = info.energy;
+            modalHouseInfluence.textContent = info.influence;
+            modalHouseBenefits.textContent = info.benefits;
+            modalHouseChallenges.textContent = info.challenges;
+            modalMansionName.textContent = mansion.name;
+            modalMansionLetter.textContent = mansion.letter;
+            modalMansionAngle.textContent = `${mansion.angle.toFixed ? mansion.angle.toFixed(2) : mansion.angle}°`;
+            modalMansionMeaning.textContent = mansion.meaning;
+            modalSealWar.textContent = seal.war || "—";
+            modalSealTalisman.textContent = seal.talisman || "—";
+            modalSealLetterPower.textContent = seal.letterPower || "—";
+            modalSealArabicNames.textContent = seal.arabicNames || "—";
+            modalSealSyriacNames.textContent = seal.syriacNames || "—";
+            modalSealDays.textContent = seal.days || "—";
+            modalSealStars.textContent = seal.stars || "—";
+            modalSealAdhesives.textContent = seal.adhesives || "—";
+            modalSealEarthlyHelpers.textContent = seal.earthlyHelpers || "—";
+            modalSealHeavenlyKings.textContent = seal.heavenlyKings || "—";
+            houseModal.style.display = "flex";
+        }
+        /* ---------- تحديد النص والنسخ عند الضغط بالزر الأيمن ---------- */
+        function onCellRightClick(e) {
+            e.preventDefault(); // منع ظهور قائمة السياق الافتراضية
+            const now = Date.now();
+            const cell = this;
+            const idx = Number(cell.dataset.index);
+            // إذا كانت هناك خلية محددة مسبقًا
+            if (selectedCell && selectedCell !== cell) {
+                selectedCell.classList.remove('text-selected');
+                selectedCell = null;
+            }
+            // تحديد الخلية الجديدة
+            if (!cell.classList.contains('text-selected')) {
+                cell.classList.add('text-selected');
+                selectedCell = cell;
+                lastRightClickTime = now;
+            } 
+            // إذا كانت الخلية محددة مسبقًا والضغط الثاني خلال 500 مللي ثانية
+            else if (now - lastRightClickTime < 500) {
+                // نسخ النص إلى الحافظة
+                copyCellContent(cell);
+                // إلغاء التحديد
+                cell.classList.remove('text-selected');
+                selectedCell = null;
+                lastRightClickTime = 0;
+            }
+        }
+        function copyCellContent(cell) {
+            const idx = Number(cell.dataset.index);
+            const word = words[idx];
+            const gematria = computeAbjad(word);
+            const letter = cell.querySelector('.meta-letter').innerText;
+            const zodiac = cell.querySelector('.meta-tower').innerText;
+            const asma = cell.querySelector('.extras .asm').innerText;
+            const surah = cell.querySelector('.extras .surah').innerText;
+            const day = cell.querySelector('.extras .day').innerText;
+            const kh = cell.querySelector('.extras .kh').innerText;
+            const contentToCopy = `
+                الكلمة: ${word}
+                قيمة الجمل: ${gematria}
+                الحرف: ${letter}
+                البرج: ${zodiac}
+                الأسماء: ${asma}
+                السور: ${surah}
+                اليوم: ${day}
+                الخدام: ${kh}
+            `.replace(/^\s+/gm, ''); // إزالة المسافات الزائدة من بداية كل سطر
+            navigator.clipboard.writeText(contentToCopy).then(() => {
+                // إظهار مؤشر نسخ ناجح
+                cell.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.7)';
+                setTimeout(() => {
+                    cell.style.boxShadow = '';
+                }, 500);
+                // إظهار رسالة مؤقتة
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.top = '20px';
+                notification.style.right = '20px';
+                notification.style.background = '#4CAF50';
+                notification.style.color = 'white';
+                notification.style.padding = '10px 15px';
+                notification.style.borderRadius = '5px';
+                notification.style.zIndex = '1000';
+                notification.textContent = `تم نسخ: ${word || 'بلا محتوى'}`;
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 500);
+                }, 1500);
+            }).catch(err => {
+                console.error('فشل في نسخ النص: ', err);
+            });
+        }
+        /* ---------- تحميل النص وتقسيم الكلمات ---------- */
+        function loadWordsFromField() {
+            const raw = textInput.value.trim();
+            const arr = splitToWords(raw);
+            for (let i = 0; i < TOTAL; i++) {
+                words[i] = arr[i] || '';
+                revealed[i] = false;
+            }
+            currentIndex = 0;
+            for (let i = 0; i < TOTAL; i++) {
+                cells[i].querySelector('.word').innerText = words[i] || '';
+                cells[i].querySelector('.gematria').innerText = words[i] ? computeAbjad(words[i]) : '';
+                updateExtras(i);
+            }
+            applyAllBlackColors();
+            updateStatus();
+        }
+        /* ---------- أزرار / مفاتيح ---------- */
+        document.getElementById('btnLoadFromInput').addEventListener('click', loadWordsFromField);
+        document.getElementById('btnFillDemo').addEventListener('click', () => {
+            const sample = Array.from({ length: 64 }, (_, i) => `كلمة${i + 1}`).join(' ');
+            textInput.value = sample;
+            loadWordsFromField();
+        });
+        document.getElementById('btnRandom').addEventListener('click', randomColoring);
+        document.getElementById('btnSpectrum').addEventListener('click', rainbowColoring);
+        document.getElementById('btnReset').addEventListener('click', () => {
+            words = Array.from({ length: TOTAL }, () => '');
+            assignedClass = new Array(TOTAL).fill(null);
+            revealed = new Array(TOTAL).fill(false);
+            currentIndex = 0;
+            for (let i = 0; i < TOTAL; i++) {
+                cells[i].className = 'cell hidden';
+                cells[i].querySelector('.word').innerText = '';
+                cells[i].querySelector('.gematria').innerText = '';
+                updateExtras(i);
+            }
+            applyAllBlackColors();
+            updateStatus();
+        });
+        document.getElementById('btnNext').addEventListener('click', revealNext);
+        document.getElementById('btnPrev').addEventListener('click', revealPrev);
+        document.getElementById('btnSubmit').addEventListener('click', () => {
+            const done = revealed.filter(Boolean).length === TOTAL;
+            if (!done) {
+                alert('لم تكتشف كل الخانات بعد. اكمل أو اضغط التالي حتى تكتمل 64.');
+                return;
+            }
+            const w = window.open('', '_blank');
+            const list = words.map((wrd, i) => `<li>${i + 1}. ${escapeHtml(wrd || '')} — ${computeAbjad(wrd || '')}</li>`).join('');
+            w.document.write(`<html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>نتيجة اللوحة</title>
+                <style>body{font-family:Tahoma,Arial;color:#000;background:#fff;padding:18px}</style></head><body>
+                <h2 style="text-align:center">قائمة الكلمات وقيم الجُمّل الكبير</h2><ol>${list}</ol></body></html>`);
+            w.document.close();
+        });
+        document.getElementById('btnLoad').addEventListener('click', loadWordsFromField);
+        /* ---------- التحكم بالماوس والأسهم للتكبير والتصغير ---------- */
+        let isDragging = false;
+        let startX, startY, startTransformX = 0, startTransformY = 0;
+        gridEl.addEventListener('mousedown', (e) => {
+            if (e.button !== 0) return;
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const transform = window.getComputedStyle(gridEl).transform;
+            if (transform !== 'none') {
+                const values = transform.split('(')[1].split(')')[0].split(',');
+                startTransformX = parseFloat(values[4]);
+                startTransformY = parseFloat(values[5]);
+            }
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            gridEl.style.transform = `translate(${startTransformX + dx}px, ${startTransformY + dy}px)`;
+        });
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        document.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+        function changeCellSize(delta) {
+            let current = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
+            let next = Math.min(2500, Math.max(40, current + delta));
+            document.documentElement.style.setProperty('--cell-size', next + 'px');
+            sizeRange.value = next;
+            sizeValue.innerText = next + 'px';
+        }
+        gridEl.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            let step = e.deltaY < 0 ? 5 : -5;
+            changeCellSize(step);
+        }, { passive: false });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                changeCellSize(5);
+            } else if (e.key === 'ArrowDown') {
+                changeCellSize(-5);
+            }
+        });
+        sizeRange.addEventListener('input', (e) => {
+            const v = e.target.value;
+            document.documentElement.style.setProperty('--cell-size', v + 'px');
+            sizeValue.innerText = v + 'px';
+        });
+        function updateStatus() {
+            revealedCountEl.innerText = revealed.filter(Boolean).length;
+            currentWordEl.innerText = words[Math.min(currentIndex, TOTAL - 1)] || '—';
+        }
+        function escapeHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '<').replace(/>/g, '>'); }
+        function renderRainbowLegend() {
+            rainbowLegend.innerHTML = rainbow.map(r => `<div style="display:flex; gap:6px; align-items:center; margin-bottom:4px;">
+                <div style="width:18px;height:12px;background:${r.color};border-radius:3px"></div>
+                <div style="font-size:13px;color:#fff">${r.name} — <span style="color:var(--muted)">${r.meaning}</span></div>
+            </div>`).join('');
+        }
+        function calculateMoonPosition(days) {
+            const cycle = 28;
+            const anglePerDay = 360 / cycle;
+            return (days * anglePerDay) % 360;
+        }
+        function generateMessage() {
+            const dateVal = dateInput.value;
+            if (!dateVal) { alert("الرجاء اختيار تاريخ"); return; }
+            const startDate = new Date("2024-04-07");
+            const selectedDate = new Date(dateVal);
+            const daysDiff = Math.floor((selectedDate - startDate) / 86400000);
+            const currentDay = (daysDiff % 28 + 28) % 28;
+            const moonData = MOON_MANSIONS[currentDay];
+            const output = `
+                <div style="padding:8px; background:#0e1a24; border:1px solid #173142; border-radius:8px">
+                    <div style="font-weight:800; color:#f5d08a; margin-bottom:6px">منزلة اليوم: ${moonData.name}</div>
+                    <div>الحرف الكوني: ${moonData.letter}</div>
+                    <div>الزاوية القمرية: ${moonData.angle.toFixed(2)}°</div>
+                    <div>الدلالة: ${moonData.meaning}</div>
+                </div>
+            `;
+            outputEl.innerHTML = output;
+            let tableHTML = "";
+            for (let day = 0; day < 28; day++) {
+                const angle = calculateMoonPosition(day);
+                tableHTML += `
+                    <tr>
+                        <td>${day + 1}</td>
+                        <td>${MOON_MANSIONS[day].name}</td>
+                        <td>${MOON_MANSIONS[day].letter}</td>
+                        <td>${angle.toFixed(2)}°</td>
+                        <td>${MOON_MANSIONS[day].meaning}</td>
+                    </tr>
+                `;
+            }
+            mansionBody.innerHTML = tableHTML;
+            abumasharBody.innerHTML = ABU_MASHAR_TABLE
+                .map(item => `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.degree}°</td>
+                        <td>${item.secret}</td>
+                        <td>${item.property}</td>
+                    </tr>
+                `).join("");
+        }
+        function toggleTables() {
+            mainTable.classList.toggle("active");
+            abumasharTable.classList.toggle("active");
+        }
+        (function init() {
+            buildGrid();
+            sizeValue.innerText = sizeRange.value + 'px';
+            renderRainbowLegend();
+            closeHouseModal.addEventListener('click', () => {
+                houseModal.style.display = "none";
+            });
+            window.addEventListener('click', (e) => {
+                if (e.target === houseModal) {
+                    houseModal.style.display = "none";
+                }
+            });
+            btnAnalyze.addEventListener('click', generateMessage);
+            btnToggleTables.addEventListener('click', toggleTables);
+            generateMessage();
+        })();
+    </script>
+</body>
+</html>
